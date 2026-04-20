@@ -1,0 +1,104 @@
+.create-post-box {
+  padding: 1rem;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid var(--line);
+  animation: fadeInUp 0.35s ease;
+}
+
+.create-post-box__top {
+  display: flex;
+  gap: 0.9rem;
+}
+
+.create-post-box__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #07110a;
+  font-weight: 900;
+}
+
+.create-post-box__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.create-post-box textarea {
+  flex: 1;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  color: white;
+  outline: none;
+}
+
+.create-post-box textarea:focus {
+  border-color: var(--ar-green);
+}
+
+.create-post-box__preview {
+  margin-top: 1rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.create-post-box__preview img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+.create-post-box__actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.create-post-box__file-button,
+.create-post-box__publish {
+  border: none;
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.create-post-box__file-button {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.create-post-box__file-button input {
+  display: none;
+}
+
+.create-post-box__publish {
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  color: #04110a;
+  min-width: 160px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

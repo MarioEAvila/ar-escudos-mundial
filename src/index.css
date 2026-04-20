@@ -1,4 +1,72 @@
-/* === Reset básico para que Vite no meta layout raro === */
+/* ==============================
+   FUENTE PRINCIPAL — MUNDIAL FC
+============================== */
+
+@font-face {
+  font-family: "Freshman";
+  src: url("./assets/fonts/Freshman-Condensed.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* ==============================
+   VARIABLES GLOBALES DEL PROYECTO
+============================== */
+
+:root {
+
+  /* Fondos */
+
+  --bg-main: #0a0a0a;
+  --bg-secondary: #121212;
+  --panel: #171717;
+  --panel-soft: #1d1d1d;
+
+  /* Texto */
+
+  --text-main: #ffffff;
+  --text-soft: #cfcfcf;
+  --text-muted: #9b9b9b;
+
+  /* Color principal AR */
+
+  --ar-green: #00e676;
+  --ar-green-dark: #00c853;
+
+  /* Colores dinámicos por selección */
+
+  --mexico: #00a651;
+  --argentina: #6ec6ff;
+  --brasil: #ffdf00;
+  --francia: #3f51b5;
+  --alemania: #ff5252;
+  --espana: #ffb300;
+  --inglaterra: #f5f5f5;
+  --portugal: #ff3d00;
+  --uruguay: #4fc3f7;
+  --paises-bajos: #ff6f00;
+  --italia: #42a5f5;
+  --japon: #ef5350;
+
+  /* Tipografías */
+
+  --title-font: "Freshman", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  --body-font: "Inter", "Segoe UI", Arial, sans-serif;
+
+  /* UI */
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+
+}
+
+
+/* ==============================
+   RESET BASE
+============================== */
+
 * {
   box-sizing: border-box;
 }
@@ -8,17 +76,63 @@ html, body {
 }
 
 body {
+
   margin: 0;
-  background: #111;
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+
+  background:
+    linear-gradient(180deg, rgba(0, 230, 118, 0.05), transparent 20%),
+    linear-gradient(135deg, #050505 0%, #0a0a0a 40%, #121212 100%);
+
+  color: var(--text-main);
+
+  font-family: var(--body-font);
 }
 
-/* IMPORTANTE:
-   Quitamos el padding/max-width del template de Vite */
+
+/* ==============================
+   ROOT CONTAINER
+============================== */
+
 #root {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+
+/* ==============================
+   TÍTULOS DEPORTIVOS
+============================== */
+
+h1, h2, h3,
+.title-font {
+
+  font-family: var(--title-font);
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+
+/* ==============================
+   ELEMENTOS BASE
+============================== */
+
+button {
+  font-family: var(--title-font);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--body-font);
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }

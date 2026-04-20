@@ -1,0 +1,30 @@
+.auth-switch {
+  display: flex;
+  width: 100%;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  gap: 0.35rem;
+}
+
+.auth-switch__button {
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem 1rem;
+  font-family: var(--title-font);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-soft);
+  transition: all 0.25s ease;
+}
+
+.auth-switch__button.active {
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  color: #04110a;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.24);
+}

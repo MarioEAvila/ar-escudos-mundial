@@ -1,93 +1,77 @@
-/* ===== Estilos base ===== */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #111;
-  color: white;
-}
+/* ==============================
+   MUNDIAL FC — APP BASE
+============================== */
 
-/* ===== Contenedor principal ===== */
+/* Ya no usamos el layout viejo centrado con .container
+   porque ahora el home vive en HomePage.jsx */
+
 .container {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
 }
 
-/* ===== Título ===== */
-h1 {
-  font-size: 40px;
-  margin: 0;
-}
 
-/* ===== Botones ===== */
-button {
-  width: 220px;
-  padding: 12px;
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
-  background: #2c7be5;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
+/* ==============================
+   MODAL GLOBAL
+============================== */
 
-button:hover {
-  background: #1a5fc1;
-}
-
-/* ===== MODAL: Overlay ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(6px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 3000;
   padding: 16px;
   opacity: 0;
   animation: overlayIn 0.25s ease forwards;
 }
 
-/* ===== MODAL: Ventana ===== */
 .modal {
-  width: min(420px, 92vw);
-  background: #fff;
-  border-radius: 14px;
+  position: relative;
+  z-index: 3001;
+  width: min(460px, 94vw);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+    rgba(20, 20, 20, 0.96);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
   padding: 22px 20px;
-  text-align: center;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42);
   transform: translateY(6px);
   opacity: 0;
   animation: modalIn 0.25s ease forwards;
-  color: #111;
+  color: var(--text-main);
 }
 
 .modal-title {
   margin: 0 0 10px 0;
-  color: #111;
+  color: var(--text-main);
 }
 
 .modal-text {
   margin: 0 0 18px 0;
-  line-height: 1.4;
-  color: #222;
+  line-height: 1.5;
+  color: var(--text-soft);
 }
 
 .modal-close {
-  background: #3b82f6;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  color: #04110a;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modal-close:hover {
-  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
 }
 
-/* ===== Animación de salida ===== */
 .modal-overlay.closing {
   animation: overlayOut 0.25s ease forwards;
 }
@@ -96,7 +80,6 @@ button:hover {
   animation: modalOut 0.25s ease forwards;
 }
 
-/* ===== Keyframes ===== */
 @keyframes overlayIn {
   to {
     opacity: 1;
@@ -123,218 +106,139 @@ button:hover {
   }
 }
 
-/* ===== Manual ===== */
-.manual {
-  text-align: left;
-  margin-top: 10px;
-  color: #111;
-}
 
-.manual ol {
-  margin: 0;
-  padding-left: 18px;
-}
+/* ==============================
+   PANTALLA AR
+============================== */
 
-.manual li {
-  margin: 8px 0;
-  line-height: 1.35;
-}
-
-.manual-notes {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.manual-notes p {
-  margin: 6px 0;
-}
-
-/* ===== Trivia ===== */
-.trivia {
-  text-align: left;
-  margin-top: 8px;
-}
-
-.trivia-progress {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  opacity: 0.85;
-}
-
-.trivia-question {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-}
-
-.trivia-options {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.trivia-option {
-  width: 100%;
-  text-align: left;
-}
-
-.trivia-option.selected {
-  outline: 2px solid rgba(0, 90, 255, 0.5);
-}
-
-.trivia-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  margin-top: 6px;
-}
-
-.trivia-result {
-  text-align: left;
-  margin-top: 8px;
-}
-
-.trivia-score {
-  margin: 0 0 6px 0;
-  font-weight: 700;
-}
-
-.trivia-grade {
-  margin: 0 0 12px 0;
-  font-weight: 700;
-}
-
-.trivia-review {
-  max-height: 260px;
-  overflow: auto;
-  padding-right: 6px;
-}
-
-.trivia-review-item {
-  padding: 10px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.trivia-review-q {
-  margin: 0 0 6px 0;
-  font-weight: 600;
-}
-
-.trivia-review-a.ok {
-  color: #0f7a2a;
-}
-
-.trivia-review-a.bad {
-  color: #b00020;
-}
-
-.trivia-review-correct {
-  margin: 0;
-  opacity: 0.9;
-}
-
-/* ===== Pantalla AR completa ===== */
 .ar-screen {
   position: fixed;
   inset: 0;
   z-index: 1200;
-  background: #000;
+  background:
+    linear-gradient(180deg, rgba(0, 230, 118, 0.04), transparent 12%),
+    rgba(0, 0, 0, 0.96);
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
-/* Header AR */
 .ar-screen-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
-  background: rgba(0, 0, 0, 0.75);
+  gap: 1rem;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.78);
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
 }
 
 .ar-screen-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 2rem;
   color: white;
 }
 
-.ar-screen-close {
-  width: auto;
-  min-width: 110px;
+.ar-screen-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
 }
 
-/* Body AR */
+.ar-screen-header__actions button,
+.ar-screen-close {
+  width: auto;
+  min-width: 120px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.ar-screen-header__actions button {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.ar-screen-header__actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.22);
+}
+
+.ar-screen-close {
+  background: linear-gradient(135deg, #ef5350, #c62828);
+  color: white;
+}
+
+.ar-screen-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.22);
+}
+
 .ar-screen-body {
   flex: 1;
+  position: relative;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   background: #000;
+  min-height: 0;
+  overflow: auto;
 }
 
-/* ===== Contenedor AR ===== */
-.ar-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
 
-.ar-host {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  background: #000;
-}
+/* ==============================
+   BOTÓN FLOTANTE CERRAR SESIÓN
+============================== */
 
-/* 
-  Orden correcto de capas para MindAR:
-  - video de cámara visible detrás
-  - canvas de tracking oculto
-  - canvas de render arriba
-*/
-.ar-host video {
-  position: absolute !important;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  display: block;
-  z-index: 1 !important;
-}
-
-.ar-host canvas {
-  position: absolute !important;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  display: block;
-  z-index: 2 !important;
-  background: transparent !important;
-}
-
-/* Oculta el canvas de tracking interno */
-.ar-host canvas:nth-of-type(1) {
-  opacity: 0 !important;
-}
-
-/* Mantiene visible el canvas principal de render */
-.ar-host canvas:nth-of-type(2) {
-  opacity: 1 !important;
-}
-
-/* Etiquetas debajo del área AR */
-.ar-detected-label {
-  margin: 0;
-  padding: 10px 12px;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 600;
+.floating-logout {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1250;
+  border: none;
+  border-radius: 16px;
+  padding: 0.95rem 1.15rem;
+  background: linear-gradient(135deg, #ef5350, #8e24aa);
   color: white;
-  background: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 700px) {
+  .ar-screen-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ar-screen-header__actions {
+    width: 100%;
+  }
+
+  .ar-screen-header__actions button,
+  .ar-screen-close {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .floating-logout {
+    left: 20px;
+    right: 20px;
+    bottom: 16px;
+  }
 }

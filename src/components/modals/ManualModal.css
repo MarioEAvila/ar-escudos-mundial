@@ -1,0 +1,26 @@
+.manual {
+  text-align: left;
+  margin-top: 10px;
+  color: #111;
+}
+
+.manual ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.manual li {
+  margin: 8px 0;
+  line-height: 1.35;
+}
+
+.manual-notes {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.manual-notes p {
+  margin: 6px 0;
+}

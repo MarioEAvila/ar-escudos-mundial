@@ -1,0 +1,131 @@
+.home-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+  min-height: 100%;
+}
+
+.home-sidebar__brand h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--text-main);
+}
+
+.home-sidebar__brand p {
+  margin: 0.2rem 0 0;
+  color: var(--ar-green);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+}
+
+.home-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.home-sidebar__nav-item {
+  border: none;
+  background: transparent;
+  color: var(--text-soft);
+  text-align: left;
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.home-sidebar__nav-item:hover,
+.home-sidebar__nav-item.active {
+  background: rgba(0, 230, 118, 0.12);
+  color: var(--text-main);
+  transform: translateX(4px);
+}
+
+.home-sidebar__ar-card {
+  border: 1px solid rgba(0, 230, 118, 0.26);
+  background:
+    linear-gradient(135deg, rgba(0, 230, 118, 0.16), rgba(0, 230, 118, 0.05)),
+    rgba(255, 255, 255, 0.03);
+  border-radius: 22px;
+  padding: 1rem;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.home-sidebar__ar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.24);
+}
+
+.home-sidebar__ar-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: rgba(255,255,255,0.72);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.home-sidebar__ar-card strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 1.7rem;
+  letter-spacing: 0.05em;
+}
+
+.home-sidebar__ar-card small {
+  display: block;
+  margin-top: 0.25rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.home-sidebar__profile {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--line);
+}
+
+.home-sidebar__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  color: #09110b;
+  font-weight: 900;
+}
+
+.home-sidebar__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-sidebar__profile h3 {
+  margin: 0;
+  color: white;
+  font-size: 1rem;
+}
+
+.home-sidebar__profile p {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}

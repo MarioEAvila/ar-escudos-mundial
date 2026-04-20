@@ -1,0 +1,47 @@
+.ar-hero-card {
+  padding: 1.3rem;
+  border-radius: 28px;
+  border: 1px solid rgba(0, 230, 118, 0.22);
+  background:
+    radial-gradient(circle at right center, rgba(0, 230, 118, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(0, 230, 118, 0.11), rgba(255,255,255,0.03)),
+    rgba(255,255,255,0.03);
+  overflow: hidden;
+}
+
+.ar-hero-card__eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--ar-green);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+}
+
+.ar-hero-card h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: white;
+}
+
+.ar-hero-card p {
+  max-width: 620px;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.ar-hero-card button {
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
+  color: #04110a;
+  font-size: 1.1rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ar-hero-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25);
+}
