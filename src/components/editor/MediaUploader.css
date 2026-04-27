@@ -1,0 +1,50 @@
+.media-uploader {
+  min-height: 360px;
+  border: 2px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015)),
+    rgba(255,255,255,0.025);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.media-uploader:hover {
+  border-color: var(--ar-green);
+  background: rgba(0, 230, 118, 0.055);
+  transform: translateY(-2px);
+}
+
+.media-uploader input {
+  display: none;
+}
+
+.media-uploader__icon {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 230, 118, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ar-green);
+  font-size: 2.4rem;
+}
+
+.media-uploader h3 {
+  margin: 0.4rem 0 0;
+  color: white;
+  font-size: 1.7rem;
+}
+
+.media-uploader p,
+.media-uploader span {
+  margin: 0;
+  color: var(--text-soft);
+}

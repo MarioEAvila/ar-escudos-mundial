@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tiros Libres ⚽</title>
+    <link rel="stylesheet" href="minijuego.css">
+</head>
+<body>
+
+<h1>⚽ Tiros Libres</h1>
+
+<div class="ui">
+    <div id="score">Puntos: 0</div>
+    <div id="lives">Vidas: 3</div>
+</div>
+
+<canvas id="gameCanvas" width="600" height="400"></canvas>
+<!-- Modal Game Over -->
+<div id="gameOverModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>💀 Game Over</h2>
+        <p id="finalScore"></p>
+
+        <button onclick="restartGame()">🔄 Reiniciar</button>
+        <button onclick="exitGame()">🚪 Salir</button>
+    </div>
+</div>
+
+<script src="minijuego.js"></script>
+</body>
+</html>

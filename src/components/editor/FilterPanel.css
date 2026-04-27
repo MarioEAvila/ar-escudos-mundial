@@ -1,0 +1,126 @@
+.filter-panel {
+  padding: 1rem;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid var(--line);
+}
+
+.filter-panel__header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.9rem;
+}
+
+.filter-panel__header p {
+  margin: 0.35rem 0 1rem;
+  color: var(--text-soft);
+}
+
+.filter-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.filter-panel__item {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.035);
+  color: white;
+  border-radius: 16px;
+  padding: 0.55rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.filter-panel__item:hover,
+.filter-panel__item.active {
+  transform: translateY(-2px);
+  border-color: var(--ar-green);
+  background: rgba(0, 230, 118, 0.07);
+}
+
+.filter-panel__preview {
+  height: 64px;
+  border-radius: 12px;
+  margin-bottom: 0.45rem;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0,230,118,0.42), transparent 26%),
+    linear-gradient(135deg, #134e2c, #101010 45%, #b8860b);
+}
+
+.filter-panel__item span {
+  display: block;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.filter-panel__item.active span {
+  color: var(--ar-green);
+}
+
+.filter-panel__adjustments {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.filter-panel__adjustments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.filter-panel__adjustments-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.4rem;
+}
+
+.filter-panel__adjustments-header button {
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  color: var(--ar-green);
+  background: rgba(0, 230, 118, 0.06);
+  font-size: 0.78rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.filter-panel__adjustments-header button:hover {
+  transform: translateY(-1px);
+  background: rgba(0, 230, 118, 0.12);
+}
+
+.filter-panel__control {
+  margin-bottom: 0.9rem;
+}
+
+.filter-panel__control div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.filter-panel__control span {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.filter-panel__control strong {
+  color: var(--ar-green);
+  font-size: 0.9rem;
+}
+
+.filter-panel__control input {
+  width: 100%;
+  accent-color: var(--ar-green);
+}
+
+@media (max-width: 600px) {
+  .filter-panel__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

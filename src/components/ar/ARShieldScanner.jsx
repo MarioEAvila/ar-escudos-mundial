@@ -5,24 +5,35 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import ARScannerToolbar from "./ARScannerToolbar";
 import "./ARShieldScanner.css";
 
+const COUNTRIES = [
+  { id: "mexico", name: "México", targetIndex: 0 },
+  { id: "argentina", name: "Argentina", targetIndex: 1 },
+  { id: "brazil", name: "Brasil", targetIndex: 2 },
+  { id: "france", name: "Francia", targetIndex: 3 },
+  { id: "germany", name: "Alemania", targetIndex: 4 },
+  { id: "spain", name: "España", targetIndex: 5 },
+  { id: "england", name: "Inglaterra", targetIndex: 6 },
+  { id: "portugal", name: "Portugal", targetIndex: 7 },
+  { id: "uruguay", name: "Uruguay", targetIndex: 8 },
+  { id: "netherlands", name: "Países Bajos", targetIndex: 9 },
+  { id: "italy", name: "Italia", targetIndex: 10 },
+  { id: "japan", name: "Japón", targetIndex: 11 },
+];
+
 export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const containerRef = useRef(null);
   const scanWindowRef = useRef(null);
   const mindarRef = useRef(null);
   const rendererRef = useRef(null);
 
-  const targetTrackedRef = useRef(false);
+  const anchorsRef = useRef({});
+  const modelsRef = useRef({});
+  const spawnProgressRef = useRef({});
+  const activeCountryRef = useRef(null);
+
   const resetRequestedRef = useRef(false);
   const modelEnabledRef = useRef(true);
   const modelAnimatingRef = useRef(true);
-
-  const mexicoModelRef = useRef(null);
-  const brazilModelRef = useRef(null);
-  const argentinaModelRef = useRef(null);
-
-  const mexicoSpawnProgressRef = useRef(1);
-  const brazilSpawnProgressRef = useRef(1);
-  const argentinaSpawnProgressRef = useRef(1);
 
   const [statusText, setStatusText] = useState("Listo para iniciar");
   const [detectedTeam, setDetectedTeam] = useState("Escaneo detenido");
@@ -44,15 +55,20 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   };
 
   const hideAllModels = () => {
-    if (mexicoModelRef.current) mexicoModelRef.current.visible = false;
-    if (brazilModelRef.current) brazilModelRef.current.visible = false;
-    if (argentinaModelRef.current) argentinaModelRef.current.visible = false;
+    Object.values(modelsRef.current).forEach((model) => {
+      if (model) {
+        model.visible = false;
+        model.scale.set(0, 0, 0);
+      }
+    });
   };
 
-  const resetSpawnProgress = (team) => {
-    if (team === "mexico") mexicoSpawnProgressRef.current = 0;
-    if (team === "brazil") brazilSpawnProgressRef.current = 0;
-    if (team === "argentina") argentinaSpawnProgressRef.current = 0;
+  const resetSpawnProgress = (countryId) => {
+    spawnProgressRef.current[countryId] = 0;
+  };
+
+  const getCountryName = (countryId) => {
+    return COUNTRIES.find((country) => country.id === countryId)?.name || countryId;
   };
 
   const startAR = async () => {
@@ -64,9 +80,12 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       setDetectedTeam("Preparando escaneo...");
 
       resetRequestedRef.current = false;
-      targetTrackedRef.current = false;
+      activeCountryRef.current = null;
       modelEnabledRef.current = modelEnabled;
       modelAnimatingRef.current = isModelAnimating;
+      anchorsRef.current = {};
+      modelsRef.current = {};
+      spawnProgressRef.current = {};
 
       const mindarThree = new MindARThree({
         container: containerRef.current,
@@ -80,13 +99,7 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
 
       const { renderer, scene, camera } = mindarThree;
       rendererRef.current = renderer;
-
       renderer.setClearColor(0x000000, 0);
-
-      await mindarThree.start();
-
-      setStatusText("MindAR iniciado correctamente");
-      setDetectedTeam("Coloca el escudo dentro del área");
 
       const hemiLight = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
       scene.add(hemiLight);
@@ -95,37 +108,63 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       dirLight.position.set(0, 2, 1);
       scene.add(dirLight);
 
-      // ORDEN REAL DEL targets.mind
-      // 0 = México
-      // 1 = Brasil
-      // 2 = Argentina
-      const mexicoAnchor = mindarThree.addAnchor(0);
-      const brazilAnchor = mindarThree.addAnchor(1);
-      const argentinaAnchor = mindarThree.addAnchor(2);
+      COUNTRIES.forEach((country) => {
+        const anchor = mindarThree.addAnchor(country.targetIndex);
+        anchorsRef.current[country.id] = anchor;
+        spawnProgressRef.current[country.id] = 1;
+
+        anchor.onTargetFound = () => {
+          if (resetRequestedRef.current) {
+            setStatusText("Quita el escudo y vuelve a colocarlo");
+            setDetectedTeam("Reinicio pendiente");
+            return;
+          }
+
+          activeCountryRef.current = country.id;
+          resetSpawnProgress(country.id);
+
+          setStatusText("Escudo detectado, validando posición...");
+          setDetectedTeam(`Escudo detectado: ${country.name}`);
+        };
+
+        anchor.onTargetLost = () => {
+          if (activeCountryRef.current === country.id) {
+            activeCountryRef.current = null;
+          }
+
+          const model = modelsRef.current[country.id];
+          if (model) {
+            model.visible = false;
+            model.scale.set(0, 0, 0);
+          }
+
+          if (resetRequestedRef.current) {
+            resetRequestedRef.current = false;
+            setStatusText("Detección reiniciada");
+            setDetectedTeam("Vuelve a colocar el escudo en el área");
+          } else {
+            setStatusText("Target perdido");
+            setDetectedTeam("Coloca el escudo dentro del área");
+          }
+        };
+      });
 
       const loader = new GLTFLoader();
 
       loader.load(
         "/models/model.glb",
         (gltf) => {
-          const mexicoModel = gltf.scene.clone(true);
-          prepareModel(mexicoModel);
-          mexicoAnchor.group.add(mexicoModel);
-          mexicoModelRef.current = mexicoModel;
+          COUNTRIES.forEach((country) => {
+            const anchor = anchorsRef.current[country.id];
+            if (!anchor) return;
 
-          const brazilModel = gltf.scene.clone(true);
-          prepareModel(brazilModel);
-          brazilAnchor.group.add(brazilModel);
-          brazilModelRef.current = brazilModel;
+            const model = gltf.scene.clone(true);
+            prepareModel(model);
 
-          const argentinaModel = gltf.scene.clone(true);
-          prepareModel(argentinaModel);
-          argentinaAnchor.group.add(argentinaModel);
-          argentinaModelRef.current = argentinaModel;
-
-          mexicoSpawnProgressRef.current = 1;
-          brazilSpawnProgressRef.current = 1;
-          argentinaSpawnProgressRef.current = 1;
+            anchor.group.add(model);
+            modelsRef.current[country.id] = model;
+            spawnProgressRef.current[country.id] = 1;
+          });
 
           setStatusText("Modelo GLB cargado correctamente");
         },
@@ -139,7 +178,7 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       const worldPosition = new THREE.Vector3();
 
       const isAnchorInsideScanArea = (anchor) => {
-        if (!containerRef.current || !scanWindowRef.current) return false;
+        if (!containerRef.current || !scanWindowRef.current || !anchor) return false;
 
         anchor.group.updateMatrixWorld(true);
         worldPosition.setFromMatrixPosition(anchor.group.matrixWorld);
@@ -164,149 +203,66 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
         );
       };
 
-      mexicoAnchor.onTargetFound = () => {
-        if (resetRequestedRef.current) {
-          setStatusText("Quita el escudo y vuelve a colocarlo");
-          setDetectedTeam("Reinicio pendiente");
-          return;
-        }
+      await mindarThree.start();
 
-        targetTrackedRef.current = true;
-
-        if (isAnchorInsideScanArea(mexicoAnchor)) {
-          hideAllModels();
-          resetSpawnProgress("mexico");
-
-          if (mexicoModelRef.current) {
-            mexicoModelRef.current.visible = modelEnabledRef.current;
-          }
-
-          setStatusText("Escaneo válido");
-          setDetectedTeam(
-            modelEnabledRef.current
-              ? "Escudo detectado: México"
-              : "Escudo detectado: México (modelo oculto)"
-          );
-        } else {
-          hideAllModels();
-          setStatusText("Fuera del área de escaneo");
-          setDetectedTeam("Mueve el escudo al centro del cuadro");
-        }
-      };
-
-      brazilAnchor.onTargetFound = () => {
-        if (resetRequestedRef.current) {
-          setStatusText("Quita el escudo y vuelve a colocarlo");
-          setDetectedTeam("Reinicio pendiente");
-          return;
-        }
-
-        targetTrackedRef.current = true;
-
-        if (isAnchorInsideScanArea(brazilAnchor)) {
-          hideAllModels();
-          resetSpawnProgress("brazil");
-
-          if (brazilModelRef.current) {
-            brazilModelRef.current.visible = modelEnabledRef.current;
-          }
-
-          setStatusText("Escaneo válido");
-          setDetectedTeam(
-            modelEnabledRef.current
-              ? "Escudo detectado: Brasil"
-              : "Escudo detectado: Brasil (modelo oculto)"
-          );
-        } else {
-          hideAllModels();
-          setStatusText("Fuera del área de escaneo");
-          setDetectedTeam("Mueve el escudo al centro del cuadro");
-        }
-      };
-
-      argentinaAnchor.onTargetFound = () => {
-        if (resetRequestedRef.current) {
-          setStatusText("Quita el escudo y vuelve a colocarlo");
-          setDetectedTeam("Reinicio pendiente");
-          return;
-        }
-
-        targetTrackedRef.current = true;
-
-        if (isAnchorInsideScanArea(argentinaAnchor)) {
-          hideAllModels();
-          resetSpawnProgress("argentina");
-
-          if (argentinaModelRef.current) {
-            argentinaModelRef.current.visible = modelEnabledRef.current;
-          }
-
-          setStatusText("Escaneo válido");
-          setDetectedTeam(
-            modelEnabledRef.current
-              ? "Escudo detectado: Argentina"
-              : "Escudo detectado: Argentina (modelo oculto)"
-          );
-        } else {
-          hideAllModels();
-          setStatusText("Fuera del área de escaneo");
-          setDetectedTeam("Mueve el escudo al centro del cuadro");
-        }
-      };
-
-      const handleLost = () => {
-        targetTrackedRef.current = false;
-        hideAllModels();
-
-        if (resetRequestedRef.current) {
-          resetRequestedRef.current = false;
-          setStatusText("Detección reiniciada");
-          setDetectedTeam("Vuelve a colocar el escudo en el área");
-        } else {
-          setStatusText("Target perdido");
-          setDetectedTeam("Coloca el escudo dentro del área");
-        }
-      };
-
-      mexicoAnchor.onTargetLost = handleLost;
-      brazilAnchor.onTargetLost = handleLost;
-      argentinaAnchor.onTargetLost = handleLost;
+      setStatusText("Cámara activa");
+      setDetectedTeam("Coloca el escudo dentro del área");
 
       renderer.setAnimationLoop(() => {
-        const modelEntries = [
-          {
-            model: mexicoModelRef.current,
-            progressRef: mexicoSpawnProgressRef,
-          },
-          {
-            model: brazilModelRef.current,
-            progressRef: brazilSpawnProgressRef,
-          },
-          {
-            model: argentinaModelRef.current,
-            progressRef: argentinaSpawnProgressRef,
-          },
-        ];
+        const activeCountryId = activeCountryRef.current;
 
-        modelEntries.forEach(({ model, progressRef }) => {
+        Object.entries(modelsRef.current).forEach(([countryId, model]) => {
           if (!model) return;
 
-          if (model.visible && progressRef.current < 1) {
-            progressRef.current += 0.08;
-            applySpawnScale(model, progressRef.current);
-          }
+          const anchor = anchorsRef.current[countryId];
+          const isActive = activeCountryId === countryId;
+          const isInside = isActive && isAnchorInsideScanArea(anchor);
 
-          if (!model.visible) {
-            progressRef.current = 1;
+          if (resetRequestedRef.current) {
+            model.visible = false;
             model.scale.set(0, 0, 0);
+            return;
           }
 
-          if (model.visible && progressRef.current >= 1) {
-            model.scale.set(2, 2, 2);
-          }
+          if (isInside) {
+            Object.entries(modelsRef.current).forEach(([otherId, otherModel]) => {
+              if (otherId !== countryId && otherModel) {
+                otherModel.visible = false;
+                otherModel.scale.set(0, 0, 0);
+              }
+            });
 
-          if (model.visible && modelAnimatingRef.current) {
-            model.rotation.y += 0.01;
+            model.visible = modelEnabledRef.current;
+
+            const countryName = getCountryName(countryId);
+
+            setStatusText("Escaneo válido");
+            setDetectedTeam(
+              modelEnabledRef.current
+                ? `Escudo detectado: ${countryName}`
+                : `Escudo detectado: ${countryName} (modelo oculto)`
+            );
+
+            if (model.visible && spawnProgressRef.current[countryId] < 1) {
+              spawnProgressRef.current[countryId] += 0.08;
+              applySpawnScale(model, spawnProgressRef.current[countryId]);
+            }
+
+            if (model.visible && spawnProgressRef.current[countryId] >= 1) {
+              model.scale.set(2, 2, 2);
+            }
+
+            if (model.visible && modelAnimatingRef.current) {
+              model.rotation.y += 0.01;
+            }
+          } else {
+            model.visible = false;
+            model.scale.set(0, 0, 0);
+
+            if (isActive) {
+              setStatusText("Fuera del área de escaneo");
+              setDetectedTeam("Mueve el escudo al centro del cuadro");
+            }
           }
         });
 
@@ -334,16 +290,11 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       containerRef.current.innerHTML = "";
     }
 
-    targetTrackedRef.current = false;
+    activeCountryRef.current = null;
     resetRequestedRef.current = false;
-
-    mexicoModelRef.current = null;
-    brazilModelRef.current = null;
-    argentinaModelRef.current = null;
-
-    mexicoSpawnProgressRef.current = 1;
-    brazilSpawnProgressRef.current = 1;
-    argentinaSpawnProgressRef.current = 1;
+    anchorsRef.current = {};
+    modelsRef.current = {};
+    spawnProgressRef.current = {};
 
     setIsScanning(false);
     setStatusText("Escaneo detenido");
@@ -352,7 +303,7 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
 
   const handleResetDetection = () => {
     resetRequestedRef.current = true;
-    targetTrackedRef.current = false;
+    activeCountryRef.current = null;
 
     hideAllModels();
 
@@ -369,15 +320,14 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       hideAllModels();
     }
 
-    if (targetTrackedRef.current) {
-      setDetectedTeam((prev) => {
-        if (!next) {
-          if (prev.includes("México")) return "Escudo detectado: México (modelo oculto)";
-          if (prev.includes("Brasil")) return "Escudo detectado: Brasil (modelo oculto)";
-          if (prev.includes("Argentina")) return "Escudo detectado: Argentina (modelo oculto)";
-        }
-        return prev;
-      });
+    const activeCountryId = activeCountryRef.current;
+    if (activeCountryId) {
+      const countryName = getCountryName(activeCountryId);
+      setDetectedTeam(
+        next
+          ? `Escudo detectado: ${countryName}`
+          : `Escudo detectado: ${countryName} (modelo oculto)`
+      );
     }
   };
 
@@ -385,7 +335,6 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
     const next = !modelAnimatingRef.current;
     modelAnimatingRef.current = next;
     setIsModelAnimating(next);
-
     setStatusText(next ? "Giro reanudado" : "Giro pausado");
   };
 

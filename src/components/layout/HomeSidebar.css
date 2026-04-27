@@ -129,3 +129,15 @@
   color: var(--text-muted);
   font-size: 0.92rem;
 }
+
+.home-sidebar__profile {
+  width: 100%;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  text-align: left;
+}
+
+.home-sidebar__profile:hover {
+  border-color: rgba(0, 230, 118, 0.35);
+  transform: translateY(-2px);
+}

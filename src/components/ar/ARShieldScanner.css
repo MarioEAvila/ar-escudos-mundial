@@ -37,7 +37,10 @@
   background: transparent !important;
 }
 
+/* ============================= */
 /* Área visual de escaneo */
+/* ============================= */
+
 .scan-mask {
   position: absolute;
   inset: 0;
@@ -48,20 +51,31 @@
   align-items: center;
 }
 
+/* Área más grande y responsive */
+
 .scan-window {
-  width: min(62vw, 320px);
-  height: min(62vw, 320px);
-  border: 2px solid rgba(255, 255, 255, 0.78);
-  border-radius: 22px;
+  width: min(82vw, 480px);
+  height: min(82vw, 480px);
+
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+
   background: transparent;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.52);
+
+  /* oscurece exterior del cuadro */
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+
   position: relative;
+
+  transition: all 0.25s ease;
 }
+
+/* Esquinas verdes tipo scanner profesional */
 
 .scan-corner {
   position: absolute;
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   border-color: #00ff99;
   border-style: solid;
   border-width: 0;
@@ -70,53 +84,67 @@
 .scan-corner.top-left {
   top: -2px;
   left: -2px;
-  border-top-width: 5px;
-  border-left-width: 5px;
-  border-top-left-radius: 14px;
+  border-top-width: 6px;
+  border-left-width: 6px;
+  border-top-left-radius: 12px;
 }
 
 .scan-corner.top-right {
   top: -2px;
   right: -2px;
-  border-top-width: 5px;
-  border-right-width: 5px;
-  border-top-right-radius: 14px;
+  border-top-width: 6px;
+  border-right-width: 6px;
+  border-top-right-radius: 12px;
 }
 
 .scan-corner.bottom-left {
   bottom: -2px;
   left: -2px;
-  border-bottom-width: 5px;
-  border-left-width: 5px;
-  border-bottom-left-radius: 14px;
+  border-bottom-width: 6px;
+  border-left-width: 6px;
+  border-bottom-left-radius: 12px;
 }
 
 .scan-corner.bottom-right {
   bottom: -2px;
   right: -2px;
-  border-bottom-width: 5px;
-  border-right-width: 5px;
-  border-bottom-right-radius: 14px;
+  border-bottom-width: 6px;
+  border-right-width: 6px;
+  border-bottom-right-radius: 12px;
 }
+
+/* ============================= */
+/* Toolbar AR */
+/* ============================= */
 
 .ar-toolbar {
   position: absolute;
-  bottom: 25px;
+  bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 10px;
   z-index: 20;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .ar-tool-btn {
-  padding: 14px 20px;
-  font-size: 16px;
+  padding: 12px 18px;
+  font-size: 15px;
   border-radius: 999px;
   border: none;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.82);
   color: white;
   cursor: pointer;
+
+  backdrop-filter: blur(6px);
+
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.ar-tool-btn:hover {
+  transform: scale(1.05);
 }
 
 .ar-tool-btn-primary {
@@ -127,10 +155,39 @@
   background: #a02323;
 }
 
+/* ============================= */
+/* Labels inferiores */
+/* ============================= */
+
 .ar-detected-label {
   text-align: center;
-  padding: 12px;
+  padding: 10px;
   font-weight: bold;
-  background: rgba(0, 0, 0, 0.7);
+  font-size: 15px;
+
+  background: rgba(0, 0, 0, 0.72);
   color: white;
+
+  backdrop-filter: blur(6px);
+}
+
+/* ============================= */
+/* Ajustes extra para celular */
+/* ============================= */
+
+@media (max-width: 600px) {
+  .scan-window {
+    width: 88vw;
+    height: 88vw;
+  }
+
+  .ar-tool-btn {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .scan-corner {
+    width: 36px;
+    height: 36px;
+  }
 }

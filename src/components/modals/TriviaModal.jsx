@@ -4,9 +4,10 @@ import "./TriviaModal.css";
 export default function TriviaModal({
   questions = [],
   onClose,
-  countryName = "Qatar 2022",
+  onRestart,
+  countryName = "Road to World Cup 2026",
   countryFlag = "🌍",
-  title = "Trivia",
+  title = "Trivia Mundial 2026",
 }) {
   const [triviaIndex, setTriviaIndex] = useState(0);
   const [triviaAnswers, setTriviaAnswers] = useState(
@@ -66,6 +67,11 @@ export default function TriviaModal({
   };
 
   const restartTrivia = () => {
+    if (typeof onRestart === "function") {
+      onRestart();
+      return;
+    }
+
     setTriviaIndex(0);
     setTriviaAnswers(Array(questions.length).fill(null));
     setTriviaFinished(false);
@@ -282,7 +288,7 @@ export default function TriviaModal({
 
           <div className="trivia-actions">
             <button type="button" onClick={restartTrivia}>
-              Reintentar
+              Reintentar con nuevas preguntas
             </button>
           </div>
         </div>

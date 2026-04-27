@@ -14,7 +14,14 @@ import {
   upcomingMatches,
 } from "../data/homeData";
 
-function HomePage({ currentUser, onOpenAR }) {
+function HomePage({
+  currentUser,
+  onOpenAR,
+  onOpenProfile,
+  onGoHome,
+  onOpenEditor,
+  onOpenMinigame,
+}) {
   const [posts, setPosts] = useState(initialFeedPosts);
 
   const orderedPosts = useMemo(() => posts, [posts]);
@@ -38,14 +45,32 @@ function HomePage({ currentUser, onOpenAR }) {
     <main className="home-page">
       <div className="home-page__grid">
         <div className="home-page__left">
-          <HomeSidebar user={currentUser} onOpenAR={onOpenAR} />
+          <HomeSidebar
+            user={currentUser}
+            onOpenAR={onOpenAR}
+            onGoHome={onGoHome}
+            onOpenProfile={onOpenProfile}
+            onOpenEditor={onOpenEditor}
+            onOpenMinigame={onOpenMinigame}
+            activeSection="home"
+          />
         </div>
 
         <div className="home-page__center">
-          <HomeTopbar />
+          <HomeTopbar
+            onGoHome={onGoHome}
+            onOpenProfile={onOpenProfile}
+            onOpenEditor={onOpenEditor}
+          />
+
           <SelectionStrip selections={highlightedSelections} />
+
           <ARHeroCard onOpenAR={onOpenAR} />
-          <CreatePostBox currentUser={currentUser} onCreatePost={handleCreatePost} />
+
+          <CreatePostBox
+            currentUser={currentUser}
+            onCreatePost={handleCreatePost}
+          />
 
           <div className="home-page__feed">
             {orderedPosts.map((post) => (

@@ -1,6 +1,6 @@
 import "./HomeTopbar.css";
 
-function HomeTopbar() {
+function HomeTopbar({ onGoHome, onOpenProfile, onOpenEditor }) {
   return (
     <div className="home-topbar">
       <input
@@ -10,9 +10,10 @@ function HomeTopbar() {
       />
 
       <div className="home-topbar__actions">
-        <button>Inicio</button>
+        <button onClick={onGoHome}>Inicio</button>
         <button>Noticias</button>
-        <button>Perfil</button>
+        <button onClick={onOpenEditor}>Editor</button>
+        <button onClick={onOpenProfile}>Perfil</button>
       </div>
     </div>
   );

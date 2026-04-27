@@ -1,20 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import ARShieldScanner from "./components/ar/ARShieldScanner";
 import TriviaModal from "./components/modals/TriviaModal";
 import ManualModal from "./components/modals/ManualModal";
-import { getTriviaByCountry } from "./data/triviaData";
+import { getWorldCupTrivia } from "./data/triviaData";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
+import MediaEditorPage from "./pages/MediaEditorPage";
+import MinigamePage from "./pages/MinigamePage";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
   const { currentUser, isAuthenticated, logout } = useAuth();
 
+  const [activePage, setActivePage] = useState("home");
   const [modalType, setModalType] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showARScreen, setShowARScreen] = useState(false);
-  const [activeTriviaCountry, setActiveTriviaCountry] = useState("mexico");
+  const [activeTrivia, setActiveTrivia] = useState(() => getWorldCupTrivia(20));
 
   const manualContent = {
     title: "Manual de uso (Modo AR)",
@@ -29,24 +33,24 @@ export default function App() {
       "Pulsa 'Detener' para apagar el escáner.",
     ],
     notes: [
-      "Esta versión reconoce actualmente el escudo de México.",
+      "Esta versión reconoce actualmente los escudos integrados en targets.mind.",
       "El modelo 3D gira automáticamente cuando la detección es válida.",
     ],
   };
-
-  const activeTrivia = useMemo(() => {
-    return getTriviaByCountry(activeTriviaCountry);
-  }, [activeTriviaCountry]);
 
   const openModal = (type) => {
     setIsClosing(false);
     setModalType(type);
   };
 
-  const openTriviaForCountry = (countryId) => {
-    setActiveTriviaCountry(countryId);
+  const openRandomTrivia = () => {
+    setActiveTrivia(getWorldCupTrivia(20));
     setIsClosing(false);
     setModalType("trivia");
+  };
+
+  const restartRandomTrivia = () => {
+    setActiveTrivia(getWorldCupTrivia(20));
   };
 
   const closeModal = () => {
@@ -57,6 +61,11 @@ export default function App() {
       setIsClosing(false);
     }, 250);
   };
+
+  const goHome = () => setActivePage("home");
+  const openProfile = () => setActivePage("profile");
+  const openEditor = () => setActivePage("editor");
+  const openMinigame = () => setActivePage("minigame");
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -73,7 +82,49 @@ export default function App() {
 
   return (
     <>
-      <HomePage currentUser={currentUser} onOpenAR={() => setShowARScreen(true)} />
+      {activePage === "home" && (
+        <HomePage
+          currentUser={currentUser}
+          onOpenAR={() => setShowARScreen(true)}
+          onOpenProfile={openProfile}
+          onGoHome={goHome}
+          onOpenEditor={openEditor}
+          onOpenMinigame={openMinigame}
+        />
+      )}
+
+      {activePage === "profile" && (
+        <ProfilePage
+          currentUser={currentUser}
+          onOpenAR={() => setShowARScreen(true)}
+          onOpenProfile={openProfile}
+          onGoHome={goHome}
+          onOpenEditor={openEditor}
+          onOpenMinigame={openMinigame}
+        />
+      )}
+
+      {activePage === "editor" && (
+        <MediaEditorPage
+          currentUser={currentUser}
+          onOpenAR={() => setShowARScreen(true)}
+          onOpenProfile={openProfile}
+          onGoHome={goHome}
+          onOpenEditor={openEditor}
+          onOpenMinigame={openMinigame}
+        />
+      )}
+
+      {activePage === "minigame" && (
+        <MinigamePage
+          currentUser={currentUser}
+          onOpenAR={() => setShowARScreen(true)}
+          onOpenProfile={openProfile}
+          onGoHome={goHome}
+          onOpenEditor={openEditor}
+          onOpenMinigame={openMinigame}
+        />
+      )}
 
       {showARScreen && (
         <div className="ar-screen">
@@ -82,8 +133,11 @@ export default function App() {
 
             <div className="ar-screen-header__actions">
               <button onClick={() => openModal("manual")}>Manual</button>
-              <button onClick={() => openTriviaForCountry("mexico")}>Trivia</button>
-              <button className="ar-screen-close" onClick={() => setShowARScreen(false)}>
+              <button onClick={openRandomTrivia}>Trivia</button>
+              <button
+                className="ar-screen-close"
+                onClick={() => setShowARScreen(false)}
+              >
                 Cerrar
               </button>
             </div>
@@ -92,7 +146,7 @@ export default function App() {
           <div className="ar-screen-body">
             <ARShieldScanner
               onOpenManual={() => openModal("manual")}
-              onOpenTrivia={() => openTriviaForCountry("mexico")}
+              onOpenTrivia={openRandomTrivia}
             />
           </div>
         </div>
@@ -125,6 +179,7 @@ export default function App() {
               countryFlag={activeTrivia.flag}
               title={activeTrivia.title}
               onClose={closeModal}
+              onRestart={restartRandomTrivia}
             />
           </div>
         </div>

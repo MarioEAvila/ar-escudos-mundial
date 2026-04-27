@@ -15,585 +15,491 @@ export const countryOrder = [
 
 export const scannerEnabledCountries = ["mexico", "argentina", "brazil"];
 
+export const WORLD_CUP_TRIVIA_TITLE = "Trivia Mundial 2026";
+export const WORLD_CUP_TRIVIA_NAME = "Road to World Cup 2026";
+export const WORLD_CUP_TRIVIA_FLAG = "🌎";
+
+export const triviaQuestionBank = [
+  {
+    id: "wc2026_001",
+    difficulty: "easy",
+    theme: "formato",
+    question: "¿Cuántas selecciones participarán en el Mundial 2026?",
+    options: ["32", "40", "48", "64"],
+    correctIndex: 2,
+    explanation: "El Mundial 2026 será el primero con 48 selecciones.",
+  },
+  {
+    id: "wc2026_002",
+    difficulty: "easy",
+    theme: "anfitriones",
+    question: "¿Qué países serán anfitriones del Mundial 2026?",
+    options: [
+      "México, Brasil y Argentina",
+      "Canadá, México y Estados Unidos",
+      "España, Portugal y Marruecos",
+      "Estados Unidos, Inglaterra y Francia",
+    ],
+    correctIndex: 1,
+    explanation:
+      "El Mundial 2026 será organizado por Canadá, México y Estados Unidos.",
+  },
+  {
+    id: "wc2026_003",
+    difficulty: "easy",
+    theme: "sedes",
+    question: "¿Cuántos países anfitriones tendrá el Mundial 2026?",
+    options: ["1", "2", "3", "4"],
+    correctIndex: 2,
+    explanation: "Será organizado por tres países: Canadá, México y Estados Unidos.",
+  },
+  {
+    id: "wc2026_004",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué país será el primero en organizar tres Copas del Mundo?",
+    options: ["Brasil", "México", "Alemania", "Italia"],
+    correctIndex: 1,
+    explanation:
+      "México será sede por tercera vez, después de 1970 y 1986.",
+  },
+  {
+    id: "wc2026_005",
+    difficulty: "easy",
+    theme: "partidos",
+    question: "¿Cuántos partidos tendrá el Mundial 2026?",
+    options: ["64", "80", "96", "104"],
+    correctIndex: 3,
+    explanation:
+      "El Mundial 2026 tendrá 104 partidos por la expansión a 48 selecciones.",
+  },
+  {
+    id: "wc2026_006",
+    difficulty: "easy",
+    theme: "sedes",
+    question: "¿Cuántas ciudades sede tendrá el Mundial 2026?",
+    options: ["12", "14", "16", "20"],
+    correctIndex: 2,
+    explanation:
+      "El torneo se jugará en 16 ciudades sede de Canadá, México y Estados Unidos.",
+  },
+  {
+    id: "wc2026_007",
+    difficulty: "easy",
+    theme: "mexico",
+    question: "¿Cuántas ciudades sede tendrá México en el Mundial 2026?",
+    options: ["2", "3", "4", "5"],
+    correctIndex: 1,
+    explanation:
+      "México tendrá tres ciudades sede: Ciudad de México, Guadalajara y Monterrey.",
+  },
+  {
+    id: "wc2026_008",
+    difficulty: "medium",
+    theme: "mexico",
+    question: "¿Qué ciudad mexicana será sede del partido inaugural del Mundial 2026?",
+    options: ["Monterrey", "Guadalajara", "Ciudad de México", "Puebla"],
+    correctIndex: 2,
+    explanation:
+      "El partido inaugural está programado en Ciudad de México.",
+  },
+  {
+    id: "wc2026_009",
+    difficulty: "medium",
+    theme: "estadios",
+    question: "¿Qué estadio mexicano está asociado históricamente con las finales de 1970 y 1986?",
+    options: [
+      "Estadio BBVA",
+      "Estadio Akron",
+      "Estadio Azteca",
+      "Estadio Universitario",
+    ],
+    correctIndex: 2,
+    explanation:
+      "El Estadio Azteca fue escenario de las finales mundialistas de 1970 y 1986.",
+  },
+  {
+    id: "wc2026_010",
+    difficulty: "easy",
+    theme: "mexico",
+    question: "¿Qué ciudad sede del Mundial 2026 está en Nuevo León?",
+    options: ["Guadalajara", "Monterrey", "Ciudad de México", "Toronto"],
+    correctIndex: 1,
+    explanation:
+      "Monterrey será una de las ciudades sede mexicanas del Mundial 2026.",
+  },
+  {
+    id: "wc2026_011",
+    difficulty: "easy",
+    theme: "canada",
+    question: "¿Qué país anfitrión del Mundial 2026 tendrá sedes en Toronto y Vancouver?",
+    options: ["México", "Canadá", "Estados Unidos", "Argentina"],
+    correctIndex: 1,
+    explanation:
+      "Canadá tendrá como ciudades sede a Toronto y Vancouver.",
+  },
+  {
+    id: "wc2026_012",
+    difficulty: "medium",
+    theme: "estados_unidos",
+    question: "¿Qué país tendrá más ciudades sede en el Mundial 2026?",
+    options: ["México", "Canadá", "Estados Unidos", "Francia"],
+    correctIndex: 2,
+    explanation:
+      "Estados Unidos tendrá la mayor cantidad de ciudades sede del torneo.",
+  },
+  {
+    id: "wc2026_013",
+    difficulty: "easy",
+    theme: "formato",
+    question: "¿Qué ronda de eliminación directa aparecerá en el Mundial 2026 por la expansión del torneo?",
+    options: [
+      "Ronda de 32",
+      "Ronda de 64",
+      "Repechaje final",
+      "Final four",
+    ],
+    correctIndex: 0,
+    explanation:
+      "Con 48 selecciones, el torneo incluirá una ronda de 32 antes de octavos.",
+  },
+  {
+    id: "wc2026_014",
+    difficulty: "easy",
+    theme: "historia",
+    question: "¿Qué selección llega al ciclo 2026 como campeona del Mundial 2022?",
+    options: ["Francia", "Brasil", "Argentina", "Alemania"],
+    correctIndex: 2,
+    explanation:
+      "Argentina ganó el Mundial de Qatar 2022.",
+  },
+  {
+    id: "wc2026_015",
+    difficulty: "easy",
+    theme: "historia",
+    question: "¿Qué selección tiene más títulos mundiales antes del Mundial 2026?",
+    options: ["Alemania", "Italia", "Brasil", "Argentina"],
+    correctIndex: 2,
+    explanation:
+      "Brasil es la selección con más Copas del Mundo, con cinco títulos.",
+  },
+  {
+    id: "wc2026_016",
+    difficulty: "medium",
+    theme: "brasil",
+    question: "¿Qué buscará Brasil en el Mundial 2026?",
+    options: [
+      "Su primer título mundial",
+      "Su sexto título mundial",
+      "Su segundo título mundial",
+      "Su primera clasificación",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Brasil buscará ganar su sexta Copa del Mundo.",
+  },
+  {
+    id: "wc2026_017",
+    difficulty: "medium",
+    theme: "argentina",
+    question: "¿Qué buscará Argentina en el Mundial 2026?",
+    options: [
+      "Debutar en un Mundial",
+      "Defender el título conseguido en 2022",
+      "Ser anfitriona",
+      "Ganar su primera Copa del Mundo",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Argentina llega al ciclo 2026 como campeona vigente de Qatar 2022.",
+  },
+  {
+    id: "wc2026_018",
+    difficulty: "easy",
+    theme: "mexico",
+    question: "¿Qué ventaja tiene México al ser país anfitrión?",
+    options: [
+      "Clasificación automática",
+      "Jugar todos los partidos de visitante",
+      "No jugar fase de grupos",
+      "Entrar directo a semifinales",
+    ],
+    correctIndex: 0,
+    explanation:
+      "Los países anfitriones tienen clasificación automática al torneo.",
+  },
+  {
+    id: "wc2026_019",
+    difficulty: "medium",
+    theme: "sedes",
+    question: "¿Cuál de estas ciudades NO es sede mexicana del Mundial 2026?",
+    options: ["Monterrey", "Guadalajara", "Ciudad de México", "Cancún"],
+    correctIndex: 3,
+    explanation:
+      "Las sedes mexicanas son Ciudad de México, Guadalajara y Monterrey.",
+  },
+  {
+    id: "wc2026_020",
+    difficulty: "easy",
+    theme: "formato",
+    question: "¿El Mundial 2026 tendrá más selecciones que Qatar 2022?",
+    options: ["Sí", "No", "Tendrá las mismas", "Tendrá menos"],
+    correctIndex: 0,
+    explanation:
+      "Qatar 2022 tuvo 32 selecciones; 2026 tendrá 48.",
+  },
+  {
+    id: "wc2026_021",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué Mundial fue el primero organizado por México?",
+    options: ["1966", "1970", "1986", "1994"],
+    correctIndex: 1,
+    explanation:
+      "México organizó por primera vez una Copa del Mundo en 1970.",
+  },
+  {
+    id: "wc2026_022",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿En qué año México organizó su segundo Mundial?",
+    options: ["1978", "1982", "1986", "1990"],
+    correctIndex: 2,
+    explanation:
+      "México organizó su segundo Mundial en 1986.",
+  },
+  {
+    id: "wc2026_023",
+    difficulty: "easy",
+    theme: "canada",
+    question: "¿Canadá será uno de los países anfitriones del Mundial 2026?",
+    options: ["Sí", "No", "Solo será invitado", "Solo será sede de la final"],
+    correctIndex: 0,
+    explanation:
+      "Canadá será país anfitrión junto con México y Estados Unidos.",
+  },
+  {
+    id: "wc2026_024",
+    difficulty: "easy",
+    theme: "estados_unidos",
+    question: "¿Estados Unidos será país anfitrión del Mundial 2026?",
+    options: ["Sí", "No", "Solo jugará repechaje", "Solo será invitado"],
+    correctIndex: 0,
+    explanation:
+      "Estados Unidos será uno de los tres países anfitriones.",
+  },
+  {
+    id: "wc2026_025",
+    difficulty: "medium",
+    theme: "formato",
+    question: "¿Qué característica hace especial al Mundial 2026 respecto a todos los anteriores?",
+    options: [
+      "Será el primero con 48 selecciones",
+      "Será el primero sin fase de grupos",
+      "Será el primero sin final",
+      "Será el primero en Sudamérica",
+    ],
+    correctIndex: 0,
+    explanation:
+      "El Mundial 2026 será el primero con 48 selecciones.",
+  },
+  {
+    id: "wc2026_026",
+    difficulty: "medium",
+    theme: "sedes",
+    question: "¿Cuál de estas ciudades será sede en Canadá?",
+    options: ["Montreal", "Toronto", "Ottawa", "Calgary"],
+    correctIndex: 1,
+    explanation:
+      "Toronto será una de las sedes canadienses del Mundial 2026.",
+  },
+  {
+    id: "wc2026_027",
+    difficulty: "medium",
+    theme: "sedes",
+    question: "¿Cuál de estas ciudades será sede en México?",
+    options: ["Tijuana", "Puebla", "Guadalajara", "León"],
+    correctIndex: 2,
+    explanation:
+      "Guadalajara será una de las tres sedes mexicanas.",
+  },
+  {
+    id: "wc2026_028",
+    difficulty: "medium",
+    theme: "sedes",
+    question: "¿Cuál de estas ciudades será sede en Estados Unidos?",
+    options: ["Miami", "Roma", "Madrid", "Buenos Aires"],
+    correctIndex: 0,
+    explanation:
+      "Miami será una de las ciudades sede de Estados Unidos.",
+  },
+  {
+    id: "wc2026_029",
+    difficulty: "easy",
+    theme: "historia",
+    question: "¿Qué selección ganó el Mundial 2018?",
+    options: ["Croacia", "Francia", "Argentina", "Brasil"],
+    correctIndex: 1,
+    explanation:
+      "Francia ganó el Mundial 2018 en Rusia.",
+  },
+  {
+    id: "wc2026_030",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué selección ganó el Mundial 2014?",
+    options: ["Argentina", "Alemania", "España", "Países Bajos"],
+    correctIndex: 1,
+    explanation:
+      "Alemania ganó el Mundial 2014 en Brasil.",
+  },
+  {
+    id: "wc2026_031",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué selección ganó el Mundial 2010?",
+    options: ["España", "Italia", "Francia", "Alemania"],
+    correctIndex: 0,
+    explanation:
+      "España ganó su primera Copa del Mundo en 2010.",
+  },
+  {
+    id: "wc2026_032",
+    difficulty: "hard",
+    theme: "formato",
+    question: "¿Cuántos grupos tendrá el Mundial 2026?",
+    options: ["8", "10", "12", "16"],
+    correctIndex: 2,
+    explanation:
+      "El formato de 48 selecciones contempla 12 grupos.",
+  },
+  {
+    id: "wc2026_033",
+    difficulty: "medium",
+    theme: "formato",
+    question: "¿Cuántas selecciones tendrá cada grupo en el Mundial 2026?",
+    options: ["3", "4", "5", "6"],
+    correctIndex: 1,
+    explanation:
+      "El Mundial 2026 tendrá 12 grupos de 4 selecciones.",
+  },
+  {
+    id: "wc2026_034",
+    difficulty: "medium",
+    theme: "formato",
+    question: "¿Qué equipos avanzan directamente desde cada grupo?",
+    options: [
+      "Solo el primero",
+      "Los dos primeros",
+      "Los tres primeros",
+      "Todos los equipos",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Los dos primeros de cada grupo avanzan a la fase eliminatoria.",
+  },
+  {
+    id: "wc2026_035",
+    difficulty: "hard",
+    theme: "formato",
+    question: "Además de los dos primeros de cada grupo, ¿quiénes avanzan a la ronda de 32?",
+    options: [
+      "Los mejores terceros",
+      "Los mejores cuartos",
+      "Los campeones continentales",
+      "Los anfitriones solamente",
+    ],
+    correctIndex: 0,
+    explanation:
+      "También avanzan los mejores terceros lugares para completar la ronda de 32.",
+  },
+  {
+    id: "wc2026_036",
+    difficulty: "easy",
+    theme: "mexico",
+    question: "¿México tendrá partidos del Mundial 2026?",
+    options: ["Sí", "No", "Solo entrenamientos", "Solo la final"],
+    correctIndex: 0,
+    explanation:
+      "México será uno de los países anfitriones y tendrá partidos oficiales.",
+  },
+  {
+    id: "wc2026_037",
+    difficulty: "medium",
+    theme: "sedes",
+    question: "¿Qué ciudad será sede del Mundial 2026 y está en Jalisco?",
+    options: ["Guadalajara", "Monterrey", "Toronto", "Houston"],
+    correctIndex: 0,
+    explanation:
+      "Guadalajara, Jalisco, será una de las sedes mexicanas.",
+  },
+  {
+    id: "wc2026_038",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué selección fue subcampeona en Qatar 2022?",
+    options: ["Croacia", "Francia", "Brasil", "Portugal"],
+    correctIndex: 1,
+    explanation:
+      "Francia fue subcampeona tras perder la final ante Argentina.",
+  },
+  {
+    id: "wc2026_039",
+    difficulty: "medium",
+    theme: "historia",
+    question: "¿Qué selección quedó en tercer lugar en Qatar 2022?",
+    options: ["Marruecos", "Croacia", "Brasil", "Países Bajos"],
+    correctIndex: 1,
+    explanation:
+      "Croacia terminó en tercer lugar en Qatar 2022.",
+  },
+  {
+    id: "wc2026_040",
+    difficulty: "easy",
+    theme: "mundial2026",
+    question: "¿El Mundial 2026 será un torneo pre-torneo en tu app o ya con resultados finales?",
+    options: [
+      "Pre-torneo / Road to 2026",
+      "Resultados finales del torneo",
+      "Solo penales",
+      "Solo clubes",
+    ],
+    correctIndex: 0,
+    explanation:
+      "Como el torneo aún no se juega, la trivia se enfoca en el camino rumbo al Mundial 2026.",
+  },
+];
+
 export const triviaData = {
-  mexico: {
-    id: "mexico",
-    name: "México",
-    flag: "🇲🇽",
+  worldCup2026: {
+    id: "worldCup2026",
+    name: WORLD_CUP_TRIVIA_NAME,
+    flag: WORLD_CUP_TRIVIA_FLAG,
     era: "2026",
     scannerEnabled: true,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "mex_2026_1",
-        difficulty: "easy",
-        theme: "road_to_2026",
-        question: "¿Qué papel tendrá México en la Copa del Mundo 2026?",
-        options: [
-          "Solo participará como invitado",
-          "Será uno de los países anfitriones",
-          "No participará automáticamente",
-          "Solo albergará un partido amistoso",
-        ],
-        correctIndex: 1,
-        explanation:
-          "México será uno de los tres países anfitriones del Mundial 2026 junto con Estados Unidos y Canadá.",
-      },
-      {
-        id: "mex_2026_2",
-        difficulty: "easy",
-        theme: "sedes",
-        question: "¿Cuántas ciudades sede tendrá México en el Mundial 2026?",
-        options: ["2", "3", "4", "5"],
-        correctIndex: 1,
-        explanation:
-          "México tendrá tres ciudades sede para la Copa del Mundo 2026.",
-      },
-      {
-        id: "mex_2026_3",
-        difficulty: "medium",
-        theme: "historia",
-        question: "Si México disputa el Mundial 2026, ¿qué logro histórico conseguiría como anfitrión?",
-        options: [
-          "Ser sede por segunda vez",
-          "Ser la primera sede compartida",
-          "Ser sede por tercera vez",
-          "Ser la primera sede de CONCACAF",
-        ],
-        correctIndex: 2,
-        explanation:
-          "México sería el primer país en organizar tres Copas del Mundo: 1970, 1986 y 2026.",
-      },
-    ],
-  },
-
-  argentina: {
-    id: "argentina",
-    name: "Argentina",
-    flag: "🇦🇷",
-    era: "2026",
-    scannerEnabled: true,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "arg_2026_1",
-        difficulty: "easy",
-        theme: "campeon_vigente",
-        question: "¿Con qué estatus llega Argentina rumbo al Mundial 2026?",
-        options: [
-          "Como subcampeón vigente",
-          "Como campeón vigente",
-          "Como anfitrión",
-          "Como invitado especial",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Argentina llega rumbo a 2026 como campeona del mundo tras ganar Qatar 2022.",
-      },
-      {
-        id: "arg_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "¿Qué selección buscará defender su título mundial en 2026?",
-        options: ["Francia", "Brasil", "Argentina", "Alemania"],
-        correctIndex: 2,
-        explanation:
-          "Argentina intentará defender el título conseguido en 2022.",
-      },
-      {
-        id: "arg_2026_3",
-        difficulty: "easy",
-        theme: "figuras",
-        question: "¿Qué jugador es la principal referencia reciente de Argentina rumbo a 2026?",
-        options: [
-          "Lautaro Martínez",
-          "Ángel Di María",
-          "Lionel Messi",
-          "Paulo Dybala",
-        ],
-        correctIndex: 2,
-        explanation:
-          "Lionel Messi sigue siendo la referencia más reconocible de Argentina en esta etapa rumbo a 2026.",
-      },
-    ],
-  },
-
-  brazil: {
-    id: "brazil",
-    name: "Brasil",
-    flag: "🇧🇷",
-    era: "2026",
-    scannerEnabled: true,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "bra_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Qué selección llega rumbo a 2026 con más títulos mundiales en la historia?",
-        options: ["Alemania", "Italia", "Brasil", "Argentina"],
-        correctIndex: 2,
-        explanation:
-          "Brasil es la selección con más títulos mundiales: 5.",
-      },
-      {
-        id: "bra_2026_2",
-        difficulty: "medium",
-        theme: "objetivo",
-        question: "¿Qué buscará Brasil especialmente en el Mundial 2026?",
-        options: [
-          "Su primer título mundial",
-          "Su sexto título mundial",
-          "Su tercer subcampeonato",
-          "Clasificar por primera vez",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Brasil buscará conquistar su sexta Copa del Mundo.",
-      },
-      {
-        id: "bra_2026_3",
-        difficulty: "easy",
-        theme: "figuras",
-        question: "¿Qué tipo de expectativa suele acompañar a Brasil en cada Mundial rumbo a 2026?",
-        options: [
-          "Ser sorpresa menor",
-          "Ser una de las favoritas",
-          "Quedar fuera en grupos",
-          "No clasificar",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Brasil suele llegar a cada Mundial como una de las grandes favoritas.",
-      },
-    ],
-  },
-
-  france: {
-    id: "france",
-    name: "Francia",
-    flag: "🇫🇷",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "fra_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Qué selección fue finalista en Qatar 2022 y sigue siendo candidata rumbo a 2026?",
-        options: ["Francia", "España", "Portugal", "Uruguay"],
-        correctIndex: 0,
-        explanation:
-          "Francia fue finalista en 2022 y continúa siendo una potencia de cara a 2026.",
-      },
-      {
-        id: "fra_2026_2",
-        difficulty: "medium",
-        theme: "figuras",
-        question: "¿Qué delantero francés es una de las grandes figuras rumbo a 2026?",
-        options: [
-          "Antoine Griezmann",
-          "Kylian Mbappé",
-          "Olivier Giroud",
-          "Kingsley Coman",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Kylian Mbappé es una de las máximas figuras francesas rumbo a 2026.",
-      },
-      {
-        id: "fra_2026_3",
-        difficulty: "easy",
-        theme: "titulos",
-        question: "¿Cuántos títulos mundiales tiene Francia antes de 2026?",
-        options: ["1", "2", "3", "4"],
-        correctIndex: 1,
-        explanation:
-          "Francia ha ganado dos Copas del Mundo: 1998 y 2018.",
-      },
-    ],
-  },
-
-  germany: {
-    id: "germany",
-    name: "Alemania",
-    flag: "🇩🇪",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "ger_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Cuántos títulos mundiales tiene Alemania antes de 2026?",
-        options: ["2", "3", "4", "5"],
-        correctIndex: 2,
-        explanation:
-          "Alemania suma cuatro títulos mundiales en su historia.",
-      },
-      {
-        id: "ger_2026_2",
-        difficulty: "medium",
-        theme: "objetivo",
-        question: "Rumbo a 2026, ¿qué buscará recuperar Alemania?",
-        options: [
-          "Su estatus de potencia mundialista",
-          "Su primer título",
-          "Su pase a Eurocopa",
-          "Su condición de anfitrión",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Alemania buscará consolidarse otra vez como gran potencia en el Mundial 2026.",
-      },
-      {
-        id: "ger_2026_3",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿En qué Mundial consiguió Alemania su título más reciente?",
-        options: ["2006", "2010", "2014", "2018"],
-        correctIndex: 2,
-        explanation:
-          "Alemania ganó su título más reciente en Brasil 2014.",
-      },
-    ],
-  },
-
-  spain: {
-    id: "spain",
-    name: "España",
-    flag: "🇪🇸",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "esp_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Cuántos títulos mundiales tiene España antes de 2026?",
-        options: ["0", "1", "2", "3"],
-        correctIndex: 1,
-        explanation:
-          "España ganó su única Copa del Mundo en 2010.",
-      },
-      {
-        id: "esp_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "¿Qué buscará consolidar España rumbo a 2026?",
-        options: [
-          "Una nueva generación competitiva",
-          "Su cuarta sede mundialista",
-          "Su primer pase a eliminatorias",
-          "Un cambio de confederación",
-        ],
-        correctIndex: 0,
-        explanation:
-          "España llega rumbo a 2026 impulsando una nueva generación de jugadores talentosos.",
-      },
-      {
-        id: "esp_2026_3",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Contra qué selección ganó España la final del Mundial 2010?",
-        options: ["Alemania", "Italia", "Países Bajos", "Uruguay"],
-        correctIndex: 2,
-        explanation:
-          "España venció a Países Bajos en la final de 2010.",
-      },
-    ],
-  },
-
-  england: {
-    id: "england",
-    name: "Inglaterra",
-    flag: "🏴",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "eng_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Cuántas Copas del Mundo ha ganado Inglaterra antes de 2026?",
-        options: ["0", "1", "2", "3"],
-        correctIndex: 1,
-        explanation:
-          "Inglaterra ha ganado una Copa del Mundo, en 1966.",
-      },
-      {
-        id: "eng_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "Rumbo a 2026, Inglaterra suele llegar con qué tipo de expectativa?",
-        options: [
-          "Ser una de las favoritas",
-          "No clasificar",
-          "Ser anfitriona",
-          "Jugar solo amistosos",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Inglaterra suele llegar con altas expectativas y planteles competitivos.",
-      },
-      {
-        id: "eng_2026_3",
-        difficulty: "easy",
-        theme: "figuras",
-        question: "¿Qué posición histórica intentará mejorar Inglaterra en 2026?",
-        options: [
-          "Su primer tercer lugar",
-          "Su segundo título mundial",
-          "Su primera clasificación",
-          "Su primer subcampeonato europeo",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Inglaterra buscará conquistar su segundo título mundial.",
-      },
-    ],
-  },
-
-  portugal: {
-    id: "portugal",
-    name: "Portugal",
-    flag: "🇵🇹",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "por_2026_1",
-        difficulty: "easy",
-        theme: "figuras",
-        question: "¿Qué selección europea sigue asociándose fuertemente con Cristiano Ronaldo rumbo a 2026?",
-        options: ["España", "Francia", "Portugal", "Italia"],
-        correctIndex: 2,
-        explanation:
-          "Portugal sigue siendo la selección más asociada a Cristiano Ronaldo.",
-      },
-      {
-        id: "por_2026_2",
-        difficulty: "medium",
-        theme: "historia",
-        question: "¿Cuál ha sido el mejor resultado histórico de Portugal en una Copa del Mundo?",
-        options: ["Campeón", "Subcampeón", "Tercer lugar", "Cuarto lugar"],
-        correctIndex: 2,
-        explanation:
-          "Portugal logró el tercer lugar en 1966.",
-      },
-      {
-        id: "por_2026_3",
-        difficulty: "easy",
-        theme: "road_to_2026",
-        question: "¿Qué buscará Portugal en el Mundial 2026?",
-        options: [
-          "Su primer título mundial",
-          "Su sexta Copa",
-          "Su condición de anfitrión",
-          "Volver a debutar",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Portugal buscará conquistar su primera Copa del Mundo.",
-      },
-    ],
-  },
-
-  uruguay: {
-    id: "uruguay",
-    name: "Uruguay",
-    flag: "🇺🇾",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "uru_2026_1",
-        difficulty: "easy",
-        theme: "titulos",
-        question: "¿Cuántas Copas del Mundo ha ganado Uruguay antes de 2026?",
-        options: ["1", "2", "3", "4"],
-        correctIndex: 1,
-        explanation:
-          "Uruguay ganó las Copas del Mundo de 1930 y 1950.",
-      },
-      {
-        id: "uru_2026_2",
-        difficulty: "medium",
-        theme: "historia",
-        question: "¿Qué representa Uruguay rumbo a 2026 dentro de la historia del Mundial?",
-        options: [
-          "La primera sede y campeón inicial",
-          "El país con más títulos",
-          "El anfitrión de 2026",
-          "El campeón vigente",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Uruguay fue la primera sede y el primer campeón de la historia mundialista.",
-      },
-      {
-        id: "uru_2026_3",
-        difficulty: "easy",
-        theme: "road_to_2026",
-        question: "¿Qué suele caracterizar a Uruguay en torneos mundialistas?",
-        options: [
-          "Nunca competir",
-          "Ser una selección históricamente competitiva",
-          "No clasificar",
-          "Solo jugar de local",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Uruguay suele ser una selección muy competitiva en torneos grandes.",
-      },
-    ],
-  },
-
-  netherlands: {
-    id: "netherlands",
-    name: "Países Bajos",
-    flag: "🇳🇱",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "ned_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Cuántas finales de Copa del Mundo ha jugado Países Bajos antes de 2026?",
-        options: ["1", "2", "3", "4"],
-        correctIndex: 2,
-        explanation:
-          "Países Bajos ha jugado tres finales mundialistas.",
-      },
-      {
-        id: "ned_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "¿Qué buscará conseguir Países Bajos en 2026 por primera vez?",
-        options: [
-          "Ser anfitrión",
-          "Ganar una Copa del Mundo",
-          "Clasificar a octavos",
-          "Jugar una final",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Países Bajos ha llegado a finales, pero todavía busca su primer título mundial.",
-      },
-      {
-        id: "ned_2026_3",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Contra qué selección perdió Países Bajos la final de 2010?",
-        options: ["Alemania", "Brasil", "España", "Argentina"],
-        correctIndex: 2,
-        explanation:
-          "Países Bajos perdió la final de 2010 frente a España.",
-      },
-    ],
-  },
-
-  italy: {
-    id: "italy",
-    name: "Italia",
-    flag: "🇮🇹",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "ita_2026_1",
-        difficulty: "easy",
-        theme: "titulos",
-        question: "¿Cuántas Copas del Mundo ha ganado Italia antes de 2026?",
-        options: ["2", "3", "4", "5"],
-        correctIndex: 2,
-        explanation:
-          "Italia ha ganado cuatro Copas del Mundo.",
-      },
-      {
-        id: "ita_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "¿Qué buscará recuperar Italia rumbo a 2026?",
-        options: [
-          "Presencia estable en la élite mundialista",
-          "Su primer pase a una Euro",
-          "Su rol de anfitrión",
-          "Su cambio de confederación",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Italia buscará recuperar regularidad y protagonismo en el escenario mundialista.",
-      },
-      {
-        id: "ita_2026_3",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿En qué Mundial consiguió Italia su título más reciente?",
-        options: ["1998", "2002", "2006", "2010"],
-        correctIndex: 2,
-        explanation:
-          "Italia fue campeona del mundo por última vez en 2006.",
-      },
-    ],
-  },
-
-  japan: {
-    id: "japan",
-    name: "Japón",
-    flag: "🇯🇵",
-    era: "2026",
-    scannerEnabled: false,
-    title: "Road to World Cup 2026",
-    questions: [
-      {
-        id: "jpn_2026_1",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Qué selección asiática fue coanfitriona del Mundial 2002?",
-        options: ["Corea del Sur", "Japón", "China", "Arabia Saudita"],
-        correctIndex: 1,
-        explanation:
-          "Japón fue coanfitrión del Mundial 2002 junto con Corea del Sur.",
-      },
-      {
-        id: "jpn_2026_2",
-        difficulty: "medium",
-        theme: "road_to_2026",
-        question: "¿Qué representa Japón rumbo a 2026 dentro del fútbol asiático?",
-        options: [
-          "Una selección con crecimiento competitivo constante",
-          "La campeona vigente del mundo",
-          "La sede principal de 2026",
-          "La selección con más mundiales ganados",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Japón es una de las selecciones asiáticas con crecimiento más consistente.",
-      },
-      {
-        id: "jpn_2026_3",
-        difficulty: "easy",
-        theme: "historia",
-        question: "¿Cuál es la mejor fase que ha alcanzado Japón en una Copa del Mundo antes de 2026?",
-        options: ["Semifinal", "Cuartos de final", "Octavos de final", "Final"],
-        correctIndex: 2,
-        explanation:
-          "Japón ha alcanzado los octavos de final en varias ocasiones.",
-      },
-    ],
+    title: WORLD_CUP_TRIVIA_TITLE,
+    questions: triviaQuestionBank,
   },
 };
 
-export function getTriviaByCountry(countryId) {
-  return triviaData[countryId] || null;
+export function shuffleQuestions(questions = []) {
+  return [...questions].sort(() => Math.random() - 0.5);
+}
+
+export function getRandomTriviaQuestions(amount = 20) {
+  const shuffled = shuffleQuestions(triviaQuestionBank);
+  return shuffled.slice(0, Math.min(amount, shuffled.length));
+}
+
+export function getWorldCupTrivia(amount = 20) {
+  return {
+    ...triviaData.worldCup2026,
+    questions: getRandomTriviaQuestions(amount),
+  };
+}
+
+// Compatibilidad temporal con código viejo.
+// Ya no depende del país escaneado.
+export function getTriviaByCountry() {
+  return getWorldCupTrivia(20);
 }
