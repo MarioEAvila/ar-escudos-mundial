@@ -1,0 +1,24 @@
+.editor-library-tabs {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.editor-library-tabs button {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--text-soft);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  font: inherit;
+}
+
+.editor-library-tabs button:hover,
+.editor-library-tabs button.active {
+  color: var(--ar-green);
+  border-color: rgba(0, 230, 118, 0.35);
+  background: rgba(0, 230, 118, 0.07);
+}
