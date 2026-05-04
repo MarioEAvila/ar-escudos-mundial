@@ -60,7 +60,8 @@
 }
 
 .post-card__actions button,
-.post-card__comment-box button {
+.post-card__comment-box button,
+.post-card__comment-image-button {
   border: 1px solid var(--line);
   background: rgba(255,255,255,0.04);
   color: var(--text-soft);
@@ -72,7 +73,8 @@
 
 .post-card__actions button:hover,
 .post-card__actions button.active,
-.post-card__comment-box button:hover {
+.post-card__comment-box button:hover,
+.post-card__comment-image-button:hover {
   color: var(--ar-green);
   border-color: rgba(0, 230, 118, 0.35);
 }
@@ -98,6 +100,71 @@
   border-color: var(--ar-green);
 }
 
+.post-card__comment-image-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.post-card__comment-image-button input {
+  display: none;
+}
+
+.post-card__comment-preview,
+.post-card__comments {
+  margin-top: 0.9rem;
+}
+
+.post-card__comment-preview img {
+  width: min(260px, 100%);
+  max-height: 190px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
+.post-card__comments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.post-card__comment {
+  padding: 0.8rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.post-card__comment div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.post-card__comment strong {
+  color: white;
+}
+
+.post-card__comment span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.post-card__comment p {
+  margin: 0.45rem 0 0;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.post-card__comment img {
+  width: min(240px, 100%);
+  max-height: 180px;
+  margin-top: 0.6rem;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
 @media (max-width: 560px) {
   .post-card {
     padding: 0.85rem;
@@ -115,6 +182,10 @@
 
   .post-card__comment-box {
     flex-direction: column;
+  }
+
+  .post-card__comment-image-button {
+    text-align: center;
   }
 }
 

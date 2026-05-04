@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import "./HomePage.css";
 import HomeSidebar from "../components/layout/HomeSidebar";
 import HomeTopbar from "../components/home/HomeTopbar";
@@ -6,9 +6,9 @@ import ARHeroCard from "../components/home/ARHeroCard";
 import SelectionStrip from "../components/home/SelectionStrip";
 import CreatePostBox from "../components/feed/CreatePostBox";
 import PostCard from "../components/feed/PostCard";
+import { useSocialFeed } from "../hooks/useSocialFeed";
 import {
   highlightedSelections,
-  initialFeedPosts,
   quickStats,
   trends,
   upcomingMatches,
@@ -22,24 +22,16 @@ function HomePage({
   onOpenEditor,
   onOpenMinigame,
 }) {
-  const [posts, setPosts] = useState(initialFeedPosts);
+  const {
+    posts,
+    createPost,
+    toggleLike,
+    toggleFavorite,
+    sharePost,
+    addComment,
+  } = useSocialFeed(currentUser);
 
   const orderedPosts = useMemo(() => posts, [posts]);
-
-  const handleCreatePost = (newPost) => {
-    const createdPost = {
-      id: crypto.randomUUID(),
-      type: "post",
-      time: "Ahora mismo",
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      favorite: false,
-      ...newPost,
-    };
-
-    setPosts((prev) => [createdPost, ...prev]);
-  };
 
   return (
     <main className="home-page">
@@ -69,13 +61,27 @@ function HomePage({
 
           <CreatePostBox
             currentUser={currentUser}
-            onCreatePost={handleCreatePost}
+            onCreatePost={createPost}
           />
 
           <div className="home-page__feed">
-            {orderedPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
+            {orderedPosts.length > 0 ? (
+              orderedPosts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  currentUser={currentUser}
+                  onToggleLike={toggleLike}
+                  onToggleFavorite={toggleFavorite}
+                  onShare={sharePost}
+                  onAddComment={addComment}
+                />
+              ))
+            ) : (
+              <div className="home-page__empty-feed">
+                Todavía no hay publicaciones. Sé el primero en compartir algo.
+              </div>
+            )}
           </div>
         </div>
 
