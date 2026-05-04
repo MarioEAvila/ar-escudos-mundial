@@ -20,6 +20,8 @@ const COUNTRIES = [
   { id: "japan", name: "Japón", targetIndex: 11 },
 ];
 
+const MODEL_VISIBLE_SCALE = 1.18;
+
 export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const containerRef = useRef(null);
   const scanWindowRef = useRef(null);
@@ -34,21 +36,31 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const resetRequestedRef = useRef(false);
   const modelEnabledRef = useRef(true);
   const modelAnimatingRef = useRef(true);
+  const cameraMirroredRef = useRef(false);
 
   const [statusText, setStatusText] = useState("Listo para iniciar");
   const [detectedTeam, setDetectedTeam] = useState("Escaneo detenido");
   const [isScanning, setIsScanning] = useState(false);
   const [modelEnabled, setModelEnabled] = useState(true);
   const [isModelAnimating, setIsModelAnimating] = useState(true);
+  const [isCameraMirrored, setIsCameraMirrored] = useState(false);
+
+  const shouldMirrorCameraPreview = () => {
+    if (typeof window === "undefined") return false;
+
+    const isTouchFirstDevice = window.matchMedia("(pointer: coarse)").matches;
+
+    return !isTouchFirstDevice;
+  };
 
   const applySpawnScale = (model, progress) => {
     const clamped = Math.max(0, Math.min(1, progress));
-    const scale = 2 * clamped;
+    const scale = MODEL_VISIBLE_SCALE * clamped;
     model.scale.set(scale, scale, scale);
   };
 
   const prepareModel = (model) => {
-    model.position.set(0, -0.15, 0);
+    model.position.set(0, 0.05, 0);
     model.rotation.set(0, Math.PI, 0);
     model.visible = false;
     model.scale.set(0, 0, 0);
@@ -83,6 +95,8 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
       activeCountryRef.current = null;
       modelEnabledRef.current = modelEnabled;
       modelAnimatingRef.current = isModelAnimating;
+      cameraMirroredRef.current = shouldMirrorCameraPreview();
+      setIsCameraMirrored(cameraMirroredRef.current);
       anchorsRef.current = {};
       modelsRef.current = {};
       spawnProgressRef.current = {};
@@ -187,8 +201,12 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
         const hostRect = containerRef.current.getBoundingClientRect();
         const scanRect = scanWindowRef.current.getBoundingClientRect();
 
-        const screenX = ((worldPosition.x + 1) / 2) * hostRect.width;
+        let screenX = ((worldPosition.x + 1) / 2) * hostRect.width;
         const screenY = ((-worldPosition.y + 1) / 2) * hostRect.height;
+
+        if (cameraMirroredRef.current) {
+          screenX = hostRect.width - screenX;
+        }
 
         const scanLeft = scanRect.left - hostRect.left;
         const scanTop = scanRect.top - hostRect.top;
@@ -249,7 +267,11 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
             }
 
             if (model.visible && spawnProgressRef.current[countryId] >= 1) {
-              model.scale.set(2, 2, 2);
+              model.scale.set(
+                MODEL_VISIBLE_SCALE,
+                MODEL_VISIBLE_SCALE,
+                MODEL_VISIBLE_SCALE
+              );
             }
 
             if (model.visible && modelAnimatingRef.current) {
@@ -297,6 +319,8 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
     spawnProgressRef.current = {};
 
     setIsScanning(false);
+    cameraMirroredRef.current = false;
+    setIsCameraMirrored(false);
     setStatusText("Escaneo detenido");
     setDetectedTeam("Listo para iniciar");
   };
@@ -365,7 +389,10 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   return (
     <div className="ar-wrapper">
       <div className="ar-stage">
-        <div ref={containerRef} className="ar-host" />
+        <div
+          ref={containerRef}
+          className={`ar-host ${isCameraMirrored ? "is-mirrored" : ""}`}
+        />
 
         <div className="scan-mask">
           <div ref={scanWindowRef} className="scan-window">
