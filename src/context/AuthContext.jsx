@@ -1,63 +1,52 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import authService from "../services/authService";
-
-export const AuthContext = createContext();
+import { AuthContext } from "./authContextValue";
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  /* =============================
-     Cargar usuario guardado
-  ============================= */
-
-  useEffect(() => {
-    const savedUser = authService.getCurrentUser();
-
-    if (savedUser) {
-      setCurrentUser(savedUser);
-    }
-  }, []);
+  const [currentUser, setCurrentUser] = useState(() =>
+    authService.getCurrentUser()
+  );
 
   /* =============================
      Login
   ============================= */
 
-  const login = (credentials) => {
+  const login = useCallback((credentials) => {
     const user = authService.loginUser(credentials);
 
     setCurrentUser(user);
 
     return user;
-  };
+  }, []);
 
   /* =============================
      Registro
   ============================= */
 
-  const register = (userData) => {
+  const register = useCallback((userData) => {
     const user = authService.registerUser(userData);
 
     setCurrentUser(user);
 
     return user;
-  };
+  }, []);
 
   /* =============================
      Logout
   ============================= */
 
-  const logout = () => {
+  const logout = useCallback(() => {
     authService.logout();
 
     setCurrentUser(null);
-  };
+  }, []);
 
   /* =============================
      Actualizar usuario activo
      (foto perfil, stats, favoritos, etc)
   ============================= */
 
-  const updateUser = (updatedData) => {
+  const updateUser = useCallback((updatedData) => {
     if (!currentUser) return null;
 
     const updatedUser = {
@@ -70,7 +59,7 @@ export function AuthProvider({ children }) {
     setCurrentUser(savedUser);
 
     return savedUser;
-  };
+  }, [currentUser]);
 
   /* =============================
      Context value
@@ -87,7 +76,7 @@ export function AuthProvider({ children }) {
 
       updateUser, // 👈 nuevo
     }),
-    [currentUser]
+    [currentUser, login, register, logout, updateUser]
   );
 
   return (

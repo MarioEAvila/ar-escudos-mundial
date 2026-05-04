@@ -1,7 +1,7 @@
 .auth-page {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(0, 230, 118, 0.08), transparent 28%),
     radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05), transparent 26%),
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
 }
 
 .auth-page__overlay {
@@ -28,7 +28,7 @@
   z-index: 1;
   width: min(1280px, 100%);
   display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
   gap: 2rem;
   align-items: center;
 }
@@ -159,6 +159,7 @@
 @media (max-width: 1080px) {
   .auth-page__content {
     grid-template-columns: 1fr;
+    max-width: 760px;
   }
 
   .auth-page__intro {
@@ -181,14 +182,20 @@
   }
 
   .auth-page__brand {
-    font-size: 3.4rem;
+    font-size: clamp(3rem, 17vw, 4rem);
   }
 
   .auth-page__headline {
-    font-size: 1.7rem;
+    font-size: clamp(1.5rem, 8vw, 1.9rem);
   }
 
   .auth-page__features {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page__feature-card {
+    padding: 0.85rem;
   }
 }

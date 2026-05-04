@@ -1,31 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Tiros Libres ⚽</title>
-    <link rel="stylesheet" href="minijuego.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiros Libres Mundial FC</title>
+  <link rel="stylesheet" href="minijuego.css">
 </head>
 <body>
+  <main class="game-shell">
+    <header class="game-header">
+      <div>
+        <p class="game-eyebrow">Zona interactiva</p>
+        <h1>Tiros Libres</h1>
+      </div>
 
-<h1>⚽ Tiros Libres</h1>
+      <div class="scoreboard" aria-label="Marcador del juego">
+        <div class="scoreboard-card">
+          <span>Puntos</span>
+          <strong id="score">0</strong>
+        </div>
 
-<div class="ui">
-    <div id="score">Puntos: 0</div>
-    <div id="lives">Vidas: 3</div>
-</div>
+        <div class="scoreboard-card">
+          <span>Vidas</span>
+          <strong id="lives">3</strong>
+        </div>
+      </div>
+    </header>
 
-<canvas id="gameCanvas" width="600" height="400"></canvas>
-<!-- Modal Game Over -->
-<div id="gameOverModal" class="modal hidden">
+    <section class="game-layout">
+      <aside class="manual-card" aria-label="Manual de uso">
+        <p class="manual-card__eyebrow">Manual de uso</p>
+        <h2>Como jugar</h2>
+
+        <ol>
+          <li>La guia se mueve sola de lado a lado.</li>
+          <li>Haz click para fijar la direccion.</li>
+          <li>La barra de potencia sube y baja.</li>
+          <li>Haz click otra vez para disparar.</li>
+        </ol>
+
+        <div class="manual-card__note">
+          <strong>Tip</strong>
+          <span>Mas alto en la barra significa mas potencia.</span>
+        </div>
+      </aside>
+
+      <section class="game-card" aria-label="Cancha de tiros libres">
+        <div class="game-card__stage">
+          <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+          <div class="power-meter" aria-label="Potencia del tiro">
+            <span>Potencia</span>
+            <div class="power-meter__track">
+              <div id="powerFill" class="power-meter__fill"></div>
+              <div id="powerMarker" class="power-meter__marker"></div>
+            </div>
+            <strong id="powerValue">50%</strong>
+          </div>
+        </div>
+
+        <div class="game-hint">
+          <span id="phaseLabel">Click para fijar direccion</span>
+          <span>2 pasos: direccion y potencia</span>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="gameOverModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-content">
-        <h2>💀 Game Over</h2>
-        <p id="finalScore"></p>
+      <p class="modal-eyebrow">Partido terminado</p>
+      <h2>Game Over</h2>
+      <p id="finalScore"></p>
 
-        <button onclick="restartGame()">🔄 Reiniciar</button>
-        <button onclick="exitGame()">🚪 Salir</button>
+      <div class="modal-actions">
+        <button type="button" onclick="restartGame()">Reiniciar</button>
+        <button type="button" class="secondary" onclick="exitGame()">Salir</button>
+      </div>
     </div>
-</div>
+  </div>
 
-<script src="minijuego.js"></script>
+  <script type="module" src="minijuego.js"></script>
 </body>
 </html>

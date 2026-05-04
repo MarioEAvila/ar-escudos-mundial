@@ -174,6 +174,7 @@ export default function App() {
         >
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <TriviaModal
+              key={activeTrivia.questions.map((question) => question.id).join("-")}
               questions={activeTrivia.questions}
               countryName={activeTrivia.name}
               countryFlag={activeTrivia.flag}

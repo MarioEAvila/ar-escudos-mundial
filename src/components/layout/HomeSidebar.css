@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 1.25rem;
+  padding: clamp(0.9rem, 1.4vw, 1.25rem);
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid var(--line);
@@ -140,4 +140,44 @@
 .home-sidebar__profile:hover {
   border-color: rgba(0, 230, 118, 0.35);
   transform: translateY(-2px);
+}
+
+@media (max-width: 1080px) {
+  .home-sidebar {
+    min-height: auto;
+  }
+
+  .home-sidebar__nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-sidebar__nav-item {
+    text-align: center;
+    padding: 0.8rem 0.6rem;
+  }
+
+  .home-sidebar__nav-item:hover,
+  .home-sidebar__nav-item.active {
+    transform: translateY(-2px);
+  }
+
+  .home-sidebar__profile,
+  .home-sidebar__ar-card {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .home-sidebar__nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-sidebar__brand h1 {
+    font-size: 1.7rem;
+  }
+
+  .home-sidebar__ar-card strong {
+    font-size: 1.45rem;
+  }
 }

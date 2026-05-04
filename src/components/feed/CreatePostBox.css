@@ -64,6 +64,7 @@
   display: flex;
   justify-content: space-between;
   gap: 0.8rem;
+  flex-wrap: wrap;
 }
 
 .create-post-box__file-button,
@@ -90,6 +91,27 @@
   background: linear-gradient(135deg, var(--ar-green-dark), var(--ar-green));
   color: #04110a;
   min-width: 160px;
+}
+
+@media (max-width: 560px) {
+  .create-post-box__top {
+    align-items: flex-start;
+  }
+
+  .create-post-box__avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .create-post-box textarea {
+    min-height: 92px;
+  }
+
+  .create-post-box__file-button,
+  .create-post-box__publish {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @keyframes fadeInUp {

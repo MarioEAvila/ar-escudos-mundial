@@ -98,6 +98,26 @@
   border-color: var(--ar-green);
 }
 
+@media (max-width: 560px) {
+  .post-card {
+    padding: 0.85rem;
+    border-radius: 18px;
+  }
+
+  .post-card__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .post-card__actions button {
+    padding: 0.7rem;
+  }
+
+  .post-card__comment-box {
+    flex-direction: column;
+  }
+}
+
 @keyframes postEnter {
   from {
     opacity: 0;

@@ -1,5 +1,5 @@
 .media-uploader {
-  min-height: 360px;
+  min-height: clamp(260px, 34vw, 360px);
   border: 2px dashed rgba(255, 255, 255, 0.16);
   border-radius: 22px;
   background:
@@ -47,4 +47,10 @@
 .media-uploader span {
   margin: 0;
   color: var(--text-soft);
+}
+
+@media (max-width: 720px) {
+  .media-uploader {
+    min-height: 220px;
+  }
 }
