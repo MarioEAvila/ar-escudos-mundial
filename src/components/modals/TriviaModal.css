@@ -1,5 +1,6 @@
 .trivia-header {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 /* ===== Badge país ===== */
@@ -8,9 +9,12 @@
   align-items: center;
   gap: 14px;
   text-align: left;
-  background: rgba(0, 0, 0, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+    rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  padding: 14px 16px;
+  padding: 12px 14px;
 }
 
 .trivia-flag {
@@ -21,18 +25,19 @@
 .trivia-country-name {
   margin: 4px 0 0 0;
   font-size: 14px;
-  color: #555;
+  color: var(--text-soft);
 }
 
 /* ===== Contenedor principal ===== */
 .trivia {
   text-align: left;
   margin-top: 10px;
+  min-height: 0;
 }
 
 /* ===== Barra progreso ===== */
 .trivia-progress-wrap {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .trivia-progress-top {
@@ -48,13 +53,13 @@
 .trivia-progress-count {
   margin: 0;
   font-size: 14px;
-  color: #333;
+  color: var(--text-soft);
 }
 
 .trivia-progress-bar {
   width: 100%;
   height: 10px;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.09);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -69,11 +74,12 @@
 /* ===== Card pregunta ===== */
 .trivia-question-card {
   position: relative;
-  background: #f7f9fc;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 18px;
-  padding: 20px 18px;
-  margin-bottom: 20px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(238, 242, 246, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: clamp(14px, 2vw, 18px);
+  margin-bottom: 14px;
 }
 
 /* ===== Badges dificultad ===== */
@@ -116,8 +122,8 @@
 /* ===== Pregunta ===== */
 .trivia-question {
   margin: 6px 0 14px 0;
-  font-size: 20px;
-  line-height: 1.5;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.42;
   color: #111;
 }
 
@@ -125,8 +131,8 @@
 .trivia-options {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-bottom: 22px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .trivia-option {
@@ -136,9 +142,9 @@
 
   background: #e8f7ef;
   border: 2px solid #1f8a4c;
-  border-radius: 14px;
+  border-radius: 12px;
 
-  padding: 14px 16px;
+  padding: 11px 14px;
 
   font-size: 15px;
   font-weight: 600;
@@ -223,12 +229,28 @@
 .trivia-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin-top: 18px;
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .trivia-actions button {
   min-width: 140px;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+}
+
+.trivia-actions button:not(:disabled):hover {
+  background: rgba(0, 230, 118, 0.18);
+  color: var(--ar-green);
+}
+
+.trivia-actions button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
 }
 
 /* ===== Resultados ===== */
@@ -275,7 +297,7 @@
 
 /* ===== Revisión respuestas ===== */
 .trivia-review {
-  max-height: 320px;
+  max-height: min(320px, 42vh);
   overflow: auto;
   padding-right: 6px;
 }
@@ -321,7 +343,9 @@
 
 /* ===== Botón cerrar ===== */
 .modal-close {
-  margin-top: 20px;
+  margin-top: 14px;
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 /* ===== Animaciones ===== */
@@ -358,17 +382,18 @@
 .modal:has(.trivia),
 .modal:has(.trivia-result),
 .modal:has(.trivia-empty) {
-  width: min(760px, 95vw);
-  max-height: 88vh;
-  overflow: hidden;
+  width: min(760px, 94vw);
+  max-height: calc(100dvh - 44px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  padding: clamp(16px, 2vw, 20px);
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 640px) {
   .trivia-question {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .trivia-flag {
@@ -381,5 +406,12 @@
 
   .trivia-actions {
     grid-template-columns: 1fr;
+  }
+
+  .modal:has(.trivia),
+  .modal:has(.trivia-result),
+  .modal:has(.trivia-empty) {
+    width: min(96vw, 520px);
+    max-height: calc(100dvh - 24px);
   }
 }
