@@ -14,6 +14,7 @@ export default function MindARTest() {
     let renderer = null;
     let destroyed = false;
     let infoInterval = null;
+    let hostElement = null;
 
     const startTest = async () => {
       try {
@@ -36,11 +37,12 @@ export default function MindARTest() {
         });
 
         if (!containerRef.current) return;
+        hostElement = containerRef.current;
 
         setStatus("Iniciando MindAR...");
 
         mindarThree = new MindARThree({
-          container: containerRef.current,
+          container: hostElement,
           imageTargetSrc: "/targets.mind",
           uiScanning: false,
           uiLoading: false,
@@ -152,8 +154,8 @@ export default function MindARTest() {
         mindarThree.stop();
       }
 
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
+      if (hostElement) {
+        hostElement.innerHTML = "";
       }
     };
   }, []);

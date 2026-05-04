@@ -1,5 +1,54 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useReducer } from "react";
 import "./TriviaModal.css";
+
+function createInitialTriviaState(questionCount) {
+  return {
+    triviaIndex: 0,
+    triviaAnswers: Array(questionCount).fill(null),
+    triviaFinished: false,
+    triviaScore: 0,
+    triviaGrade: "",
+  };
+}
+
+function triviaReducer(state, action) {
+  switch (action.type) {
+    case "select": {
+      const copy = [...state.triviaAnswers];
+      copy[state.triviaIndex] = action.optionIndex;
+      return {
+        ...state,
+        triviaAnswers: copy,
+      };
+    }
+
+    case "next":
+      return {
+        ...state,
+        triviaIndex: Math.min(state.triviaIndex + 1, action.maxIndex),
+      };
+
+    case "prev":
+      return {
+        ...state,
+        triviaIndex: Math.max(state.triviaIndex - 1, 0),
+      };
+
+    case "finish":
+      return {
+        ...state,
+        triviaFinished: true,
+        triviaScore: action.score,
+        triviaGrade: action.grade,
+      };
+
+    case "reset":
+      return createInitialTriviaState(action.questionCount);
+
+    default:
+      return state;
+  }
+}
 
 export default function TriviaModal({
   questions = [],
@@ -9,21 +58,14 @@ export default function TriviaModal({
   countryFlag = "🌍",
   title = "Trivia Mundial 2026",
 }) {
-  const [triviaIndex, setTriviaIndex] = useState(0);
-  const [triviaAnswers, setTriviaAnswers] = useState(
-    Array(questions.length).fill(null)
+  const [
+    { triviaIndex, triviaAnswers, triviaFinished, triviaScore, triviaGrade },
+    dispatch,
+  ] = useReducer(
+    triviaReducer,
+    questions.length,
+    createInitialTriviaState
   );
-  const [triviaFinished, setTriviaFinished] = useState(false);
-  const [triviaScore, setTriviaScore] = useState(0);
-  const [triviaGrade, setTriviaGrade] = useState("");
-
-  useEffect(() => {
-    setTriviaIndex(0);
-    setTriviaAnswers(Array(questions.length).fill(null));
-    setTriviaFinished(false);
-    setTriviaScore(0);
-    setTriviaGrade("");
-  }, [questions]);
 
   const computeGrade = (score, total) => {
     const pct = total === 0 ? 0 : score / total;
@@ -35,22 +77,18 @@ export default function TriviaModal({
   };
 
   const selectTriviaOption = (optionIndex) => {
-    setTriviaAnswers((prev) => {
-      const copy = [...prev];
-      copy[triviaIndex] = optionIndex;
-      return copy;
-    });
+    dispatch({ type: "select", optionIndex });
   };
 
   const nextTriviaQuestion = () => {
     if (triviaIndex < questions.length - 1) {
-      setTriviaIndex((i) => i + 1);
+      dispatch({ type: "next", maxIndex: questions.length - 1 });
     }
   };
 
   const prevTriviaQuestion = () => {
     if (triviaIndex > 0) {
-      setTriviaIndex((i) => i - 1);
+      dispatch({ type: "prev" });
     }
   };
 
@@ -61,9 +99,11 @@ export default function TriviaModal({
       if (triviaAnswers[i] === questions[i].correctIndex) score++;
     }
 
-    setTriviaScore(score);
-    setTriviaGrade(computeGrade(score, questions.length));
-    setTriviaFinished(true);
+    dispatch({
+      type: "finish",
+      score,
+      grade: computeGrade(score, questions.length),
+    });
   };
 
   const restartTrivia = () => {
@@ -72,11 +112,7 @@ export default function TriviaModal({
       return;
     }
 
-    setTriviaIndex(0);
-    setTriviaAnswers(Array(questions.length).fill(null));
-    setTriviaFinished(false);
-    setTriviaScore(0);
-    setTriviaGrade("");
+    dispatch({ type: "reset", questionCount: questions.length });
   };
 
   const currentTrivia = questions[triviaIndex];

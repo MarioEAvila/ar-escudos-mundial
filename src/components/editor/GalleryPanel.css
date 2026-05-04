@@ -40,7 +40,7 @@
 
 .gallery-panel__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 1rem;
   max-height: 620px;
   overflow-y: auto;
@@ -147,19 +147,9 @@
   line-height: 1.3;
 }
 
-@media (max-width: 1280px) {
-  .gallery-panel__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 720px) {
   .gallery-panel__header {
     flex-direction: column;
-  }
-
-  .gallery-panel__grid {
-    grid-template-columns: 1fr;
   }
 
   .gallery-card__preview {

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { filters } from "../components/editor/FilterPanel";
+import { filters } from "../data/editorFilters";
 import ffmpegService from "../services/ffmpegService";
 
 const RECENT_CREATIONS_KEY = "mundial_fc_recent_creations";

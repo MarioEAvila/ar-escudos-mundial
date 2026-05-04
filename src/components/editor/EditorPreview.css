@@ -5,7 +5,7 @@
 }
 
 .editor-preview__stage {
-  min-height: 460px;
+  min-height: clamp(320px, 42vw, 520px);
   border-radius: 24px;
   border: 1px solid var(--line);
   background:
@@ -146,6 +146,10 @@
 }
 
 @media (max-width: 720px) {
+  .editor-preview__stage {
+    min-height: 300px;
+  }
+
   .editor-preview__download {
     margin-left: 0;
     width: 100%;

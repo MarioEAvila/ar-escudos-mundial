@@ -326,4 +326,3 @@ function FilterPanel({
 }
 
 export default FilterPanel;
-export { filters };
