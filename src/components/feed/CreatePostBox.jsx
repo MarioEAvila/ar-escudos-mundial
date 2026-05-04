@@ -24,9 +24,6 @@ function CreatePostBox({ currentUser, onCreatePost }) {
     onCreatePost({
       text: trimmedText,
       image,
-      author: `${currentUser?.name} ${currentUser?.lastName}`,
-      username: `@${currentUser?.username}`,
-      verified: false,
     });
 
     setText("");

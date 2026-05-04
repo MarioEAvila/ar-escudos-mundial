@@ -33,6 +33,15 @@
   gap: 1rem;
 }
 
+.home-page__empty-feed {
+  padding: 1.4rem;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+  text-align: center;
+}
+
 .home-page__panel {
   padding: 1rem;
   border-radius: 22px;

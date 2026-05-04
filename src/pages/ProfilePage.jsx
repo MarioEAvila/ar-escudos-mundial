@@ -3,8 +3,9 @@ import "./ProfilePage.css";
 import HomeSidebar from "../components/layout/HomeSidebar";
 import HomeTopbar from "../components/home/HomeTopbar";
 import PostCard from "../components/feed/PostCard";
-import { initialFeedPosts } from "../data/homeData";
 import { useAuth } from "../hooks/useAuth";
+import { useSocialFeed } from "../hooks/useSocialFeed";
+import socialFeedService from "../services/socialFeedService";
 
 function ProfilePage({
   currentUser,
@@ -16,65 +17,48 @@ function ProfilePage({
 }) {
   const { updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState("posts");
+  const {
+    posts,
+    toggleLike,
+    toggleFavorite,
+    sharePost,
+    addComment,
+  } = useSocialFeed(currentUser);
 
-  const userPosts = useMemo(() => {
-    return [
-      {
-        id: "user-post-1",
-        type: "post",
-        author: `${currentUser?.name} ${currentUser?.lastName}`,
-        username: `@${currentUser?.username}`,
-        verified: false,
-        time: "Ahora mismo",
-        text: "Listo para vivir una nueva aventura en Mundial FC. ¡Vamos con todo! 🇲🇽💚",
-        image:
-          "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80",
-        likes: 28,
-        comments: 5,
-        shares: 3,
-        favorite: false,
-      },
-      {
-        id: "user-post-2",
-        type: "post",
-        author: `${currentUser?.name} ${currentUser?.lastName}`,
-        username: `@${currentUser?.username}`,
-        verified: false,
-        time: "Hace 2 h",
-        text: "Nuevo escudo detectado en el Modo AR. Esta función se ve increíble.",
-        image:
-          "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=80",
-        likes: 18,
-        comments: 2,
-        shares: 1,
-        favorite: true,
-      },
-    ];
-  }, [currentUser]);
+  const userPosts = useMemo(
+    () => posts.filter((post) => post.authorId === currentUser?.id),
+    [currentUser?.id, posts]
+  );
 
-  const favoritePosts = initialFeedPosts.filter((post) => post.favorite);
-  const likedPosts = initialFeedPosts.slice(0, 2);
+  const favoritePosts = useMemo(
+    () =>
+      posts.filter((post) => (post.favoriteBy || []).includes(currentUser?.id)),
+    [currentUser?.id, posts]
+  );
 
-  const userComments = [
-    {
-      id: "comment-1",
-      originalPost: "México vs Estados Unidos",
-      text: "México llega fuerte este año. Ese partido va a estar buenísimo.",
-      time: "Hace 20 min",
-    },
-    {
-      id: "comment-2",
-      originalPost: "Trivia Mundial 2026",
-      text: "La trivia por selección debería desbloquear recompensas.",
-      time: "Hace 1 h",
-    },
-    {
-      id: "comment-3",
-      originalPost: "Brasil rumbo al Mundial",
-      text: "Brasil siempre llega como favorito, pero Argentina también se ve fuerte.",
-      time: "Ayer",
-    },
-  ];
+  const likedPosts = useMemo(
+    () => posts.filter((post) => (post.likesBy || []).includes(currentUser?.id)),
+    [currentUser?.id, posts]
+  );
+
+  const userComments = useMemo(() => {
+    return posts.flatMap((post) =>
+      (post.comments || [])
+        .filter((comment) => comment.authorId === currentUser?.id)
+        .map((comment) => ({
+          ...comment,
+          originalPost: post.text || "Publicación con imagen",
+        }))
+    );
+  }, [currentUser?.id, posts]);
+
+  const postCardProps = {
+    currentUser,
+    onToggleLike: toggleLike,
+    onToggleFavorite: toggleFavorite,
+    onShare: sharePost,
+    onAddComment: addComment,
+  };
 
   const handleProfilePhotoChange = (event) => {
     const file = event.target.files?.[0];
@@ -91,32 +75,45 @@ function ProfilePage({
     reader.readAsDataURL(file);
   };
 
+  const renderPostList = (items, emptyText) => {
+    return items.length > 0 ? (
+      items.map((post) => (
+        <PostCard key={post.id} post={post} {...postCardProps} />
+      ))
+    ) : (
+      <div className="profile-empty">{emptyText}</div>
+    );
+  };
+
   const renderTabContent = () => {
     if (activeTab === "posts") {
-      return userPosts.map((post) => <PostCard key={post.id} post={post} />);
+      return renderPostList(userPosts, "Todavía no has publicado nada.");
     }
 
     if (activeTab === "favorites") {
-      return favoritePosts.length > 0 ? (
-        favoritePosts.map((post) => <PostCard key={post.id} post={post} />)
-      ) : (
-        <div className="profile-empty">Todavía no tienes favoritos.</div>
-      );
+      return renderPostList(favoritePosts, "Todavía no tienes favoritos.");
     }
 
     if (activeTab === "comments") {
-      return userComments.map((comment) => (
-        <article key={comment.id} className="profile-comment-card">
-          <p className="profile-comment-card__label">Comentaste en:</p>
-          <h3>{comment.originalPost}</h3>
-          <p>{comment.text}</p>
-          <span>{comment.time}</span>
-        </article>
-      ));
+      return userComments.length > 0 ? (
+        userComments.map((comment) => (
+          <article key={comment.id} className="profile-comment-card">
+            <p className="profile-comment-card__label">Comentaste en:</p>
+            <h3>{comment.originalPost}</h3>
+            {comment.text && <p>{comment.text}</p>}
+            {comment.image && (
+              <img src={comment.image} alt="Imagen del comentario" />
+            )}
+            <span>{socialFeedService.formatRelativeTime(comment.createdAt)}</span>
+          </article>
+        ))
+      ) : (
+        <div className="profile-empty">Todavía no has comentado nada.</div>
+      );
     }
 
     if (activeTab === "likes") {
-      return likedPosts.map((post) => <PostCard key={post.id} post={post} />);
+      return renderPostList(likedPosts, "Todavía no has dado me gusta.");
     }
 
     return null;
@@ -188,13 +185,13 @@ function ProfilePage({
                 </div>
 
                 <div>
-                  <span>Selecciones desbloqueadas</span>
-                  <strong>3 / 12</strong>
+                  <span>Favoritos</span>
+                  <strong>{favoritePosts.length}</strong>
                 </div>
 
                 <div>
-                  <span>Escaneos AR</span>
-                  <strong>7 realizados</strong>
+                  <span>Publicaciones</span>
+                  <strong>{userPosts.length}</strong>
                 </div>
               </div>
             </div>
@@ -239,38 +236,28 @@ function ProfilePage({
 
             <div className="profile-stat-list">
               <div>
-                <span>Selecciones desbloqueadas</span>
-                <strong>3 / 12</strong>
+                <span>Publicaciones</span>
+                <strong>{userPosts.length}</strong>
               </div>
 
               <div>
-                <span>Escaneos AR realizados</span>
-                <strong>7</strong>
-              </div>
-
-              <div>
-                <span>Trivias completadas</span>
-                <strong>4</strong>
-              </div>
-
-              <div>
-                <span>Precisión promedio</span>
-                <strong>82%</strong>
+                <span>Favoritos guardados</span>
+                <strong>{favoritePosts.length}</strong>
               </div>
 
               <div>
                 <span>Comentarios hechos</span>
-                <strong>12</strong>
-              </div>
-
-              <div>
-                <span>Publicaciones</span>
-                <strong>5</strong>
+                <strong>{userComments.length}</strong>
               </div>
 
               <div>
                 <span>Me gusta dados</span>
-                <strong>18</strong>
+                <strong>{likedPosts.length}</strong>
+              </div>
+
+              <div>
+                <span>Publicaciones disponibles</span>
+                <strong>{posts.length}</strong>
               </div>
             </div>
           </section>
