@@ -214,12 +214,17 @@ function ProfilePage({ currentUser, onOpenAR }) {
     if (activeTab === "comments") {
       return profileComments.length > 0 ? (
         profileComments.map((comment) => (
-          <article key={comment.id} className="profile-comment-card">
+          <Link
+            key={comment.id}
+            className="profile-comment-card profile-comment-card__link"
+            to={`/post/${comment.postId}/comment/${comment.id}`}
+          >
             <p className="profile-comment-card__label">Actividad social</p>
             <h3>{comment.postPreview || "Comentario en una publicacion"}</h3>
             {comment.text && <p>{comment.text}</p>}
+            {comment.imageUrl && <img src={comment.imageUrl} alt="Comentario" />}
             <span>{socialFeedService.formatRelativeTime(comment.createdAt)}</span>
-          </article>
+          </Link>
         ))
       ) : (
         <EmptyPanel text="Todavia no has comentado nada." />
@@ -266,6 +271,9 @@ function ProfilePage({ currentUser, onOpenAR }) {
                       <p>{activity.like.text}</p>
                     ) : (
                       <p>Comentario sin texto</p>
+                    )}
+                    {activity.like.imageUrl && (
+                      <img src={activity.like.imageUrl} alt="Comentario con me gusta" />
                     )}
                     <span>{socialFeedService.formatRelativeTime(activity.like.createdAt)}</span>
                   </Link>

@@ -46,6 +46,9 @@ router.get(
           comments: comments.map((comment) => ({
             id: String(comment._id),
             text: comment.text,
+            imageUrl: comment.imageUrl || "",
+            postId: String(comment.postId),
+            parentCommentId: comment.parentCommentId ? String(comment.parentCommentId) : "",
             createdAt: comment.createdAt,
             postPreview: "Comentario en publicacion",
           })),
@@ -57,6 +60,7 @@ router.get(
               ? {
                   postId: String(commentById.get(String(like.commentId)).postId),
                   text: commentById.get(String(like.commentId)).text,
+                  imageUrl: commentById.get(String(like.commentId)).imageUrl || "",
                   parentCommentId: commentById.get(String(like.commentId)).parentCommentId
                     ? String(commentById.get(String(like.commentId)).parentCommentId)
                     : "",
@@ -78,6 +82,7 @@ router.get(
               : {
                   postId: "",
                   text: "",
+                  imageUrl: "",
                   parentCommentId: "",
                   commentAuthor: null,
                 }),
