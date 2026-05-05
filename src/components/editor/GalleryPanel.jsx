@@ -34,7 +34,9 @@ function GalleryPanel({ onSelectItem }) {
     video.muted = true;
 
     video.play().catch((error) => {
-      console.log("No se pudo reproducir el preview del video:", error);
+      if (error.name !== "AbortError") {
+        console.log("No se pudo reproducir el preview del video:", error);
+      }
     });
   };
 
