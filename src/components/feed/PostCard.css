@@ -6,6 +6,23 @@
   animation: postEnter 0.35s ease;
 }
 
+.post-card__badge {
+  margin: 0 0 0.8rem;
+  color: var(--ar-green);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.post-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.post-card__body-link {
+  display: block;
+}
+
 .post-card__author-line {
   display: flex;
   flex-wrap: wrap;
@@ -128,6 +145,21 @@
   gap: 0.65rem;
 }
 
+.comment-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.comment-thread--depth-1,
+.comment-thread--depth-2,
+.comment-thread--depth-3 {
+  margin-top: 0.7rem;
+  margin-left: 1rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+
 .post-card__comment {
   padding: 0.8rem;
   border-radius: 14px;
@@ -135,11 +167,22 @@
   border: 1px solid rgba(255,255,255,0.06);
 }
 
-.post-card__comment div {
+.post-card__comment--highlighted {
+  border-color: rgba(0, 230, 118, 0.45);
+  background: rgba(0, 230, 118, 0.07);
+}
+
+.post-card__comment-head,
+.post-card__comment-head div {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
   align-items: center;
+  justify-content: space-between;
+}
+
+.post-card__comment-head div {
+  justify-content: flex-start;
 }
 
 .post-card__comment strong {
@@ -151,10 +194,45 @@
   font-size: 0.85rem;
 }
 
+.post-card__comment-text,
 .post-card__comment p {
   margin: 0.45rem 0 0;
   color: var(--text-soft);
   line-height: 1.5;
+}
+
+.post-card__comment-text--clamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.post-card__reply-context {
+  color: var(--ar-green);
+  font-size: 0.82rem;
+}
+
+.post-card__comment-link {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.post-card__comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 0.65rem;
+}
+
+.post-card__comment-actions button,
+.post-card__comment-actions span {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-soft);
+  border-radius: 10px;
+  padding: 0.45rem 0.7rem;
 }
 
 .post-card__comment img {

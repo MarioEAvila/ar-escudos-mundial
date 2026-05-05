@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ARShieldScanner from "./components/ar/ARShieldScanner";
 import TriviaModal from "./components/modals/TriviaModal";
 import ManualModal from "./components/modals/ManualModal";
 import { getWorldCupTrivia } from "./data/triviaData";
 import AuthPage from "./pages/AuthPage";
+import FavoritesPage from "./pages/FavoritesPage";
 import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
 import MediaEditorPage from "./pages/MediaEditorPage";
 import MinigamePage from "./pages/MinigamePage";
+import NewsPage from "./pages/NewsPage";
+import PostDetailPage from "./pages/PostDetailPage";
+import ProfilePage from "./pages/ProfilePage";
+import SelectionsPage from "./pages/SelectionsPage";
+import StatsPage from "./pages/StatsPage";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
-  const { currentUser, isAuthenticated, logout } = useAuth();
-
-  const [activePage, setActivePage] = useState("home");
+  const { currentUser, isAuthenticated, isBootstrapping, logout } = useAuth();
   const [modalType, setModalType] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showARScreen, setShowARScreen] = useState(false);
@@ -24,17 +28,17 @@ export default function App() {
     title: "Manual de uso (Modo AR)",
     steps: [
       "Abre 'Modo AR'.",
-      "Pulsa 'Iniciar escaneo' para activar la cámara.",
+      "Pulsa 'Iniciar escaneo' para activar la camara.",
       "Coloca el escudo dentro del cuadro central de escaneo.",
-      "Solo se validará el escudo si permanece dentro del área marcada.",
+      "Solo se validara el escudo si permanece dentro del area marcada.",
       "Si el modelo no aparece, ajusta el escudo al centro del cuadro.",
       "Puedes usar 'Ocultar modelo' para seguir detectando sin mostrar el personaje.",
-      "Usa 'Reiniciar detección' si quieres volver a empezar sin cerrar el modo AR.",
-      "Pulsa 'Detener' para apagar el escáner.",
+      "Usa 'Reiniciar deteccion' si quieres volver a empezar sin cerrar el modo AR.",
+      "Pulsa 'Detener' para apagar el escaner.",
     ],
     notes: [
-      "Esta versión reconoce actualmente los escudos integrados en targets.mind.",
-      "El modelo 3D gira automáticamente cuando la detección es válida.",
+      "Esta version reconoce actualmente los escudos integrados en targets.mind.",
+      "El modelo 3D gira automaticamente cuando la deteccion es valida.",
     ],
   };
 
@@ -62,69 +66,61 @@ export default function App() {
     }, 250);
   };
 
-  const goHome = () => setActivePage("home");
-  const openProfile = () => setActivePage("profile");
-  const openEditor = () => setActivePage("editor");
-  const openMinigame = () => setActivePage("minigame");
-
   useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "Escape" && modalType) closeModal();
+    const onKeyDown = (event) => {
+      if (event.key === "Escape" && modalType) closeModal();
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [modalType]);
 
+  if (isBootstrapping) {
+    return <main className="app-loading-screen">Cargando Mundial FC...</main>;
+  }
+
   if (!isAuthenticated) {
     return <AuthPage />;
   }
 
+  const sharedPageProps = {
+    currentUser,
+    onOpenAR: () => setShowARScreen(true),
+  };
+
   return (
     <>
-      {activePage === "home" && (
-        <HomePage
-          currentUser={currentUser}
-          onOpenAR={() => setShowARScreen(true)}
-          onOpenProfile={openProfile}
-          onGoHome={goHome}
-          onOpenEditor={openEditor}
-          onOpenMinigame={openMinigame}
+      <Routes>
+        <Route path="/" element={<HomePage {...sharedPageProps} />} />
+        <Route path="/news" element={<NewsPage {...sharedPageProps} />} />
+        <Route
+          path="/selections"
+          element={<SelectionsPage {...sharedPageProps} />}
         />
-      )}
-
-      {activePage === "profile" && (
-        <ProfilePage
-          currentUser={currentUser}
-          onOpenAR={() => setShowARScreen(true)}
-          onOpenProfile={openProfile}
-          onGoHome={goHome}
-          onOpenEditor={openEditor}
-          onOpenMinigame={openMinigame}
+        <Route path="/stats" element={<StatsPage {...sharedPageProps} />} />
+        <Route
+          path="/favorites"
+          element={<FavoritesPage {...sharedPageProps} />}
         />
-      )}
-
-      {activePage === "editor" && (
-        <MediaEditorPage
-          currentUser={currentUser}
-          onOpenAR={() => setShowARScreen(true)}
-          onOpenProfile={openProfile}
-          onGoHome={goHome}
-          onOpenEditor={openEditor}
-          onOpenMinigame={openMinigame}
+        <Route
+          path="/u/:username"
+          element={<ProfilePage {...sharedPageProps} />}
         />
-      )}
-
-      {activePage === "minigame" && (
-        <MinigamePage
-          currentUser={currentUser}
-          onOpenAR={() => setShowARScreen(true)}
-          onOpenProfile={openProfile}
-          onGoHome={goHome}
-          onOpenEditor={openEditor}
-          onOpenMinigame={openMinigame}
+        <Route path="/editor" element={<MediaEditorPage {...sharedPageProps} />} />
+        <Route
+          path="/minigame"
+          element={<MinigamePage {...sharedPageProps} />}
         />
-      )}
+        <Route
+          path="/post/:postId"
+          element={<PostDetailPage {...sharedPageProps} />}
+        />
+        <Route
+          path="/post/:postId/comment/:commentId"
+          element={<PostDetailPage {...sharedPageProps} />}
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {showARScreen && (
         <div className="ar-screen">
@@ -152,8 +148,8 @@ export default function App() {
         </div>
       )}
 
-      <button className="floating-logout" onClick={logout}>
-        Cerrar sesión
+      <button className="floating-logout" onClick={() => logout()}>
+        Cerrar sesion
       </button>
 
       {modalType === "manual" && (
@@ -161,7 +157,7 @@ export default function App() {
           className={`modal-overlay ${isClosing ? "closing" : ""}`}
           onClick={closeModal}
         >
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
             <ManualModal content={manualContent} onClose={closeModal} />
           </div>
         </div>
@@ -172,7 +168,7 @@ export default function App() {
           className={`modal-overlay ${isClosing ? "closing" : ""}`}
           onClick={closeModal}
         >
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
             <TriviaModal
               key={activeTrivia.questions.map((question) => question.id).join("-")}
               questions={activeTrivia.questions}

@@ -17,7 +17,7 @@ function AuthPage() {
     try {
       setLoading(true);
       setMessage("");
-      login(data);
+      await login(data);
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -29,7 +29,7 @@ function AuthPage() {
     try {
       setLoading(true);
       setMessage("");
-      register(data);
+      await register(data);
     } catch (error) {
       setMessage(error.message);
     } finally {

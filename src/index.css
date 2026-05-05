@@ -59,6 +59,7 @@
   --radius-lg: 24px;
   --radius-md: 16px;
   --radius-sm: 12px;
+  --line: rgba(255, 255, 255, 0.08);
 
 }
 
@@ -136,6 +137,66 @@ select {
 img {
   max-width: 100%;
   display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-hero {
+  padding: 1.25rem 1.35rem;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 230, 118, 0.18);
+  background:
+    radial-gradient(circle at right center, rgba(0, 230, 118, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.page-hero p {
+  margin: 0 0 0.35rem;
+  color: var(--ar-green);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.page-hero h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+}
+
+.page-hero span {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.content-panel {
+  padding: 1rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+}
+
+.content-panel--muted {
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.content-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.content-panel__header h3 {
+  margin: 0;
+  font-size: 1.45rem;
 }
 
 @media (max-width: 760px) {

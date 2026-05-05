@@ -1,18 +1,32 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import authService from "../services/authService";
 import { AuthContext } from "./authContextValue";
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(() =>
-    authService.getCurrentUser()
-  );
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    authService.getCurrentUser().then((user) => {
+      if (!isMounted) return;
+      setCurrentUser(user?.user || null);
+      setIsBootstrapping(false);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   /* =============================
      Login
   ============================= */
 
-  const login = useCallback((credentials) => {
-    const user = authService.loginUser(credentials);
+  const login = useCallback(async (credentials) => {
+    const response = await authService.loginUser(credentials);
+    const user = response.user;
 
     setCurrentUser(user);
 
@@ -23,8 +37,9 @@ export function AuthProvider({ children }) {
      Registro
   ============================= */
 
-  const register = useCallback((userData) => {
-    const user = authService.registerUser(userData);
+  const register = useCallback(async (userData) => {
+    const response = await authService.registerUser(userData);
+    const user = response.user;
 
     setCurrentUser(user);
 
@@ -35,8 +50,8 @@ export function AuthProvider({ children }) {
      Logout
   ============================= */
 
-  const logout = useCallback(() => {
-    authService.logout();
+  const logout = useCallback(async () => {
+    await authService.logout();
 
     setCurrentUser(null);
   }, []);
@@ -46,15 +61,16 @@ export function AuthProvider({ children }) {
      (foto perfil, stats, favoritos, etc)
   ============================= */
 
-  const updateUser = useCallback((updatedData) => {
+  const updateUser = useCallback(async (updatedData) => {
     if (!currentUser) return null;
 
-    const updatedUser = {
-      ...currentUser,
-      ...updatedData,
-    };
+    if (updatedData?.id) {
+      setCurrentUser(updatedData);
+      return updatedData;
+    }
 
-    const savedUser = authService.updateCurrentUser(updatedUser);
+    const response = await authService.updateCurrentUser(updatedData);
+    const savedUser = response.user;
 
     setCurrentUser(savedUser);
 
@@ -69,6 +85,7 @@ export function AuthProvider({ children }) {
     () => ({
       currentUser,
       isAuthenticated: !!currentUser,
+      isBootstrapping,
 
       login,
       register,
@@ -76,7 +93,7 @@ export function AuthProvider({ children }) {
 
       updateUser, // 👈 nuevo
     }),
-    [currentUser, login, register, logout, updateUser]
+    [currentUser, isBootstrapping, login, register, logout, updateUser]
   );
 
   return (

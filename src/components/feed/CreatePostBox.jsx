@@ -4,6 +4,7 @@ import "./CreatePostBox.css";
 function CreatePostBox({ currentUser, onCreatePost }) {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];
@@ -16,18 +17,23 @@ function CreatePostBox({ currentUser, onCreatePost }) {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedText = text.trim();
 
     if (!trimmedText && !image) return;
 
-    onCreatePost({
-      text: trimmedText,
-      image,
-    });
+    setIsSubmitting(true);
 
-    setText("");
-    setImage("");
+    try {
+      await onCreatePost({
+        text: trimmedText,
+        image,
+      });
+      setText("");
+      setImage("");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -45,9 +51,9 @@ function CreatePostBox({ currentUser, onCreatePost }) {
         </div>
 
         <textarea
-          placeholder={`¿Qué está pasando, ${currentUser?.username}?`}
+          placeholder={`¿Que esta pasando, ${currentUser?.username}?`}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(event) => setText(event.target.value)}
         />
       </div>
 
@@ -63,8 +69,12 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           <input type="file" accept="image/*" onChange={handleImageChange} />
         </label>
 
-        <button className="create-post-box__publish" onClick={handleSubmit}>
-          Publicar
+        <button
+          className="create-post-box__publish"
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Publicando..." : "Publicar"}
         </button>
       </div>
     </div>

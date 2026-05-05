@@ -5,6 +5,7 @@ function RegisterForm({ onSubmit, loading, error }) {
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
+    email: "",
     username: "",
     profilePhoto: "",
     birthday: "",
@@ -40,13 +41,14 @@ function RegisterForm({ onSubmit, loading, error }) {
     setLocalError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setLocalError("Las contraseñas no coinciden.");
+      setLocalError("Las contrasenas no coinciden.");
       return;
     }
 
     onSubmit({
       name: formData.name,
       lastName: formData.lastName,
+      email: formData.email,
       username: formData.username,
       profilePhoto: formData.profilePhoto,
       birthday: formData.birthday,
@@ -85,6 +87,19 @@ function RegisterForm({ onSubmit, loading, error }) {
       </div>
 
       <div className="register-form__group">
+        <label htmlFor="register-email">Correo electronico</label>
+        <input
+          id="register-email"
+          name="email"
+          type="email"
+          placeholder="tu@correo.com"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="register-form__group">
         <label htmlFor="register-username">Nombre de usuario</label>
         <input
           id="register-username"
@@ -115,7 +130,7 @@ function RegisterForm({ onSubmit, loading, error }) {
       )}
 
       <div className="register-form__group">
-        <label htmlFor="register-birthday">Cumpleaños</label>
+        <label htmlFor="register-birthday">Cumpleanos</label>
         <input
           id="register-birthday"
           name="birthday"
@@ -128,12 +143,12 @@ function RegisterForm({ onSubmit, loading, error }) {
 
       <div className="register-form__grid">
         <div className="register-form__group">
-          <label htmlFor="register-password">Contraseña</label>
+          <label htmlFor="register-password">Contrasena</label>
           <input
             id="register-password"
             name="password"
             type="password"
-            placeholder="Crea tu contraseña"
+            placeholder="Crea tu contrasena"
             value={formData.password}
             onChange={handleChange}
             required
@@ -141,12 +156,12 @@ function RegisterForm({ onSubmit, loading, error }) {
         </div>
 
         <div className="register-form__group">
-          <label htmlFor="register-confirmPassword">Confirmar contraseña</label>
+          <label htmlFor="register-confirmPassword">Confirmar contrasena</label>
           <input
             id="register-confirmPassword"
             name="confirmPassword"
             type="password"
-            placeholder="Repite tu contraseña"
+            placeholder="Repite tu contrasena"
             value={formData.confirmPassword}
             onChange={handleChange}
             required

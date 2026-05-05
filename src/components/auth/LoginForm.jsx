@@ -3,7 +3,7 @@ import "./LoginForm.css";
 
 function LoginForm({ onSubmit, loading, error }) {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -23,25 +23,25 @@ function LoginForm({ onSubmit, loading, error }) {
   return (
     <form className="login-form" onSubmit={handleSubmit}>
       <div className="login-form__group">
-        <label htmlFor="login-username">Nombre de usuario</label>
+        <label htmlFor="login-email">Correo electronico</label>
         <input
-          id="login-username"
-          name="username"
-          type="text"
-          placeholder="Ej. mario2026"
-          value={formData.username}
+          id="login-email"
+          name="email"
+          type="email"
+          placeholder="Ej. mario@correo.com"
+          value={formData.email}
           onChange={handleChange}
           required
         />
       </div>
 
       <div className="login-form__group">
-        <label htmlFor="login-password">Contraseña</label>
+        <label htmlFor="login-password">Contrasena</label>
         <input
           id="login-password"
           name="password"
           type="password"
-          placeholder="Ingresa tu contraseña"
+          placeholder="Ingresa tu contrasena"
           value={formData.password}
           onChange={handleChange}
           required

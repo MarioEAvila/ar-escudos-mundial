@@ -1,14 +1,18 @@
+import { NavLink } from "react-router-dom";
 import "./HomeSidebar.css";
 
-function HomeSidebar({
-  user,
-  onOpenAR,
-  onGoHome,
-  onOpenProfile,
-  onOpenEditor,
-  onOpenMinigame,
-  activeSection = "home",
-}) {
+function HomeSidebar({ user, onOpenAR, activeSection = "home" }) {
+  const links = [
+    { id: "home", to: "/", label: "Inicio" },
+    { id: "selections", to: "/selections", label: "Selecciones" },
+    { id: "stats", to: "/stats", label: "Estadisticas" },
+    { id: "news", to: "/news", label: "Noticias" },
+    { id: "favorites", to: "/favorites", label: "Favoritos" },
+    { id: "profile", to: `/u/${user?.username || ""}`, label: "Perfil" },
+    { id: "editor", to: "/editor", label: "Editor Multimedia" },
+    { id: "minigame", to: "/minigame", label: "Minijuego" },
+  ];
+
   return (
     <aside className="home-sidebar">
       <div className="home-sidebar__brand">
@@ -17,49 +21,17 @@ function HomeSidebar({
       </div>
 
       <nav className="home-sidebar__nav">
-        <button
-          className={`home-sidebar__nav-item ${
-            activeSection === "home" ? "active" : ""
-          }`}
-          onClick={onGoHome}
-        >
-          Inicio
-        </button>
-
-        <button className="home-sidebar__nav-item">Selecciones</button>
-
-        <button className="home-sidebar__nav-item">Estadísticas</button>
-
-        <button className="home-sidebar__nav-item">Noticias</button>
-
-        <button className="home-sidebar__nav-item">Favoritos</button>
-
-        <button
-          className={`home-sidebar__nav-item ${
-            activeSection === "profile" ? "active" : ""
-          }`}
-          onClick={onOpenProfile}
-        >
-          Perfil
-        </button>
-
-        <button
-          className={`home-sidebar__nav-item ${
-            activeSection === "editor" ? "active" : ""
-          }`}
-          onClick={onOpenEditor}
-        >
-          Editor Multimedia
-        </button>
-
-        <button
-          className={`home-sidebar__nav-item ${
-            activeSection === "minigame" ? "active" : ""
-          }`}
-          onClick={onOpenMinigame}
-        >
-          Minijuego
-        </button>
+        {links.map((link) => (
+          <NavLink
+            key={link.id}
+            to={link.to}
+            className={`home-sidebar__nav-item ${
+              activeSection === link.id ? "active" : ""
+            }`}
+          >
+            {link.label}
+          </NavLink>
+        ))}
       </nav>
 
       <button className="home-sidebar__ar-card" onClick={onOpenAR}>
@@ -68,7 +40,7 @@ function HomeSidebar({
         <small>Escanear escudos</small>
       </button>
 
-      <button className="home-sidebar__profile" onClick={onOpenProfile}>
+      <NavLink className="home-sidebar__profile" to={`/u/${user?.username || ""}`}>
         <div className="home-sidebar__avatar">
           {user?.profilePhoto ? (
             <img src={user.profilePhoto} alt="Foto de perfil" />
@@ -86,7 +58,7 @@ function HomeSidebar({
           </h3>
           <p>@{user?.username}</p>
         </div>
-      </button>
+      </NavLink>
     </aside>
   );
 }

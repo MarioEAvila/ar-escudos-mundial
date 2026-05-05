@@ -1,47 +1,61 @@
 import { useCallback, useState } from "react";
 import socialFeedService from "../services/socialFeedService";
 
-export function useSocialFeed(currentUser) {
-  const [posts, setPosts] = useState(() => socialFeedService.getPosts());
+export function useSocialFeed() {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const refreshFeed = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await socialFeedService.getFeed();
+      setPosts(response.items || []);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const createPost = useCallback(
-    (postData) => {
-      if (!currentUser) return;
-      setPosts(socialFeedService.createPost(currentUser, postData));
+    async (postData) => {
+      const response = await socialFeedService.createPost(postData);
+      setPosts(response.items || []);
     },
-    [currentUser]
+    []
   );
 
   const toggleLike = useCallback(
-    (postId) => {
-      if (!currentUser) return;
-      setPosts(socialFeedService.toggleLike(postId, currentUser.id));
+    async (postId) => {
+      const response = await socialFeedService.toggleLike(postId);
+      setPosts(response.items || []);
     },
-    [currentUser]
+    []
   );
 
   const toggleFavorite = useCallback(
-    (postId) => {
-      if (!currentUser) return;
-      setPosts(socialFeedService.toggleFavorite(postId, currentUser.id));
+    async (postId) => {
+      const response = await socialFeedService.toggleFavorite(postId);
+      setPosts(response.items || []);
     },
-    [currentUser]
+    []
   );
 
-  const sharePost = useCallback((postId) => {
-    setPosts(socialFeedService.sharePost(postId));
+  const sharePost = useCallback(async (postId) => {
+    const response = await socialFeedService.toggleRepost(postId);
+    setPosts(response.items || []);
   }, []);
 
   const addComment = useCallback(
-    (postId, commentData) => {
-      if (!currentUser) return;
-      setPosts(socialFeedService.addComment(postId, currentUser, commentData));
+    async (postId, commentData) => {
+      const response = await socialFeedService.addComment(postId, commentData);
+      setPosts(response.items || []);
     },
-    [currentUser]
+    []
   );
 
   return {
     posts,
+    isLoading,
+    refreshFeed,
     createPost,
     toggleLike,
     toggleFavorite,

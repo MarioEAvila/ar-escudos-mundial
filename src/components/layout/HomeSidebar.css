@@ -30,13 +30,12 @@
 }
 
 .home-sidebar__nav-item {
-  border: none;
+  display: block;
   background: transparent;
   color: var(--text-soft);
   text-align: left;
   border-radius: 14px;
   padding: 0.95rem 1rem;
-  cursor: pointer;
   font-weight: 700;
   transition: all 0.25s ease;
 }
@@ -133,7 +132,6 @@
 .home-sidebar__profile {
   width: 100%;
   border: 1px solid var(--line);
-  cursor: pointer;
   text-align: left;
 }
 
