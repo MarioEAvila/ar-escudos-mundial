@@ -25,6 +25,8 @@ function ProfilePage({ currentUser, onOpenAR }) {
     toggleFavorite,
     sharePost,
     addComment,
+    replyToComment,
+    toggleCommentLike,
   } = useSocialFeed();
 
   useEffect(() => {
@@ -100,6 +102,8 @@ function ProfilePage({ currentUser, onOpenAR }) {
           onToggleFavorite={toggleFavorite}
           onShare={sharePost}
           onAddComment={addComment}
+          onReplyToComment={replyToComment}
+          onToggleCommentLike={toggleCommentLike}
         />
       ))
     ) : (

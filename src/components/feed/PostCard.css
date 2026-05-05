@@ -52,21 +52,74 @@
   line-height: 1.7;
 }
 
+.post-card__media-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.post-card__media-grid--single {
+  grid-template-columns: 1fr;
+}
+
+.post-card__media-grid--single .post-card__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.post-card__media-grid--single .post-card__image img {
+  width: 100%;
+  height: auto;
+  max-height: min(72vh, 820px);
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.post-card__media-grid--two,
+.post-card__media-grid--four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.post-card__media-grid--three {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.post-card__media-grid--three .post-card__image:first-child {
+  grid-column: 1 / -1;
+}
+
 .post-card__image {
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .post-card__image img {
   width: 100%;
-  max-height: 420px;
-  object-fit: cover;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.26);
   transition: transform 0.35s ease;
 }
 
 .post-card__image:hover img {
   transform: scale(1.03);
+}
+
+.post-card__image--extra {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  aspect-ratio: 16 / 10;
+  background: rgba(170, 170, 170, 0.18);
+}
+
+.post-card__image--extra span {
+  color: white;
+  font-family: var(--title-font);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
 }
 
 .post-card__actions {
@@ -103,6 +156,10 @@
   animation: commentReveal 0.25s ease;
 }
 
+.post-card__comment-box--inline {
+  margin-top: 0.85rem;
+}
+
 .post-card__comment-box input {
   flex: 1;
   border: 1px solid var(--line);
@@ -136,7 +193,8 @@
   max-height: 190px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  object-fit: cover;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.24);
 }
 
 .post-card__comments {
@@ -240,7 +298,8 @@
   max-height: 180px;
   margin-top: 0.6rem;
   border-radius: 12px;
-  object-fit: cover;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.24);
 }
 
 @media (max-width: 560px) {
@@ -264,6 +323,16 @@
 
   .post-card__comment-image-button {
     text-align: center;
+  }
+
+  .post-card__media-grid--two,
+  .post-card__media-grid--three,
+  .post-card__media-grid--four {
+    grid-template-columns: 1fr;
+  }
+
+  .post-card__media-grid--three .post-card__image:first-child {
+    grid-column: auto;
   }
 }
 

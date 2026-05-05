@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AppShell from "../components/layout/AppShell";
 import EmptyPanel from "../components/common/EmptyPanel";
@@ -12,33 +12,79 @@ function PostDetailPage({ currentUser, onOpenAR }) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
+  const loadThread = useCallback(async () => {
+    setIsLoading(true);
+    setError("");
 
-    const loadThread = async () => {
-      setIsLoading(true);
-      setError("");
-
-      try {
-        const response = await socialFeedService.getPostThread(postId, commentId);
-        if (!mounted) return;
-        setThread(response);
-      } catch (fetchError) {
-        if (!mounted) return;
-        setError(fetchError.message);
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadThread();
-
-    return () => {
-      mounted = false;
-    };
+    try {
+      const response = await socialFeedService.getPostThread(postId, commentId);
+      setThread(response);
+    } catch (fetchError) {
+      setError(fetchError.message);
+    } finally {
+      setIsLoading(false);
+    }
   }, [commentId, postId]);
+
+  useEffect(() => {
+    loadThread();
+  }, [loadThread]);
+
+  const refreshAfterAction = useCallback(
+    async (action) => {
+      await action();
+      await loadThread();
+    },
+    [loadThread]
+  );
+
+  const handleToggleLike = useCallback(
+    async (targetPostId) => {
+      await refreshAfterAction(() => socialFeedService.toggleLike(targetPostId));
+    },
+    [refreshAfterAction]
+  );
+
+  const handleToggleFavorite = useCallback(
+    async (targetPostId) => {
+      await refreshAfterAction(() => socialFeedService.toggleFavorite(targetPostId));
+    },
+    [refreshAfterAction]
+  );
+
+  const handleShare = useCallback(
+    async (targetPostId) => {
+      await refreshAfterAction(() => socialFeedService.toggleRepost(targetPostId));
+    },
+    [refreshAfterAction]
+  );
+
+  const handleAddComment = useCallback(
+    async (targetPostId, commentData) => {
+      await refreshAfterAction(() =>
+        socialFeedService.addComment(targetPostId, commentData)
+      );
+    },
+    [refreshAfterAction]
+  );
+
+  const handleReplyToComment = useCallback(
+    async (targetCommentId, commentData) => {
+      await refreshAfterAction(() =>
+        socialFeedService.replyToComment(targetCommentId, commentData)
+      );
+    },
+    [refreshAfterAction]
+  );
+
+  const handleToggleCommentLike = useCallback(
+    async (targetCommentId) => {
+      await refreshAfterAction(() =>
+        socialFeedService.toggleCommentLike(targetCommentId)
+      );
+    },
+    [refreshAfterAction]
+  );
 
   return (
     <AppShell user={currentUser} activeSection="home" onOpenAR={onOpenAR}>
@@ -56,6 +102,12 @@ function PostDetailPage({ currentUser, onOpenAR }) {
         <PostCard
           post={thread.post}
           currentUser={currentUser}
+          onToggleLike={handleToggleLike}
+          onToggleFavorite={handleToggleFavorite}
+          onShare={handleShare}
+          onAddComment={handleAddComment}
+          onReplyToComment={handleReplyToComment}
+          onToggleCommentLike={handleToggleCommentLike}
           highlightedCommentId={commentId || thread.highlightedCommentId}
         />
       ) : (

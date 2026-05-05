@@ -3,34 +3,41 @@ import "./CreatePostBox.css";
 
 function CreatePostBox({ currentUser, onCreatePost }) {
   const [text, setText] = useState("");
-  const [image, setImage] = useState("");
+  const [images, setImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files || []).slice(0, 8);
+    if (!files.length) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+    Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+          })
+      )
+    ).then((loadedImages) => {
+      setImages(loadedImages.filter(Boolean));
+    });
   };
 
   const handleSubmit = async () => {
     const trimmedText = text.trim();
 
-    if (!trimmedText && !image) return;
+    if (!trimmedText && images.length === 0) return;
 
     setIsSubmitting(true);
 
     try {
       await onCreatePost({
         text: trimmedText,
-        image,
+        images,
       });
       setText("");
-      setImage("");
+      setImages([]);
     } finally {
       setIsSubmitting(false);
     }
@@ -57,16 +64,23 @@ function CreatePostBox({ currentUser, onCreatePost }) {
         />
       </div>
 
-      {image && (
+      {images.length > 0 && (
         <div className="create-post-box__preview">
-          <img src={image} alt="Vista previa" />
+          {images.map((image, index) => (
+            <img key={`${index}-${image.slice(0, 20)}`} src={image} alt={`Vista previa ${index + 1}`} />
+          ))}
         </div>
       )}
 
       <div className="create-post-box__actions">
         <label className="create-post-box__file-button">
-          Imagen
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          Imagenes
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+          />
         </label>
 
         <button

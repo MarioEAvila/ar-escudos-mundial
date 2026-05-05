@@ -52,6 +52,22 @@ export function useSocialFeed() {
     []
   );
 
+  const replyToComment = useCallback(
+    async (commentId, commentData) => {
+      const response = await socialFeedService.replyToComment(commentId, commentData);
+      setPosts(response.items || []);
+    },
+    []
+  );
+
+  const toggleCommentLike = useCallback(
+    async (commentId) => {
+      const response = await socialFeedService.toggleCommentLike(commentId);
+      setPosts(response.items || []);
+    },
+    []
+  );
+
   return {
     posts,
     isLoading,
@@ -61,5 +77,7 @@ export function useSocialFeed() {
     toggleFavorite,
     sharePost,
     addComment,
+    replyToComment,
+    toggleCommentLike,
   };
 }

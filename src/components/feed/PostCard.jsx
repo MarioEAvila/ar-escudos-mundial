@@ -39,7 +39,14 @@ function PostCard({
 
   const openReplyBox = (comment) => {
     setReplyTarget(comment);
-    setShowCommentBox(true);
+    setShowCommentBox(false);
+  };
+
+  const toggleCommentBox = () => {
+    setReplyTarget(null);
+    setCommentText("");
+    setCommentImage("");
+    setShowCommentBox((prev) => !prev);
   };
 
   const handleComment = async () => {
@@ -63,6 +70,31 @@ function PostCard({
     setReplyTarget(null);
     setShowCommentBox(false);
   };
+
+  const closeReplyBox = () => {
+    setReplyTarget(null);
+    setCommentText("");
+    setCommentImage("");
+  };
+
+  const imageUrls =
+    post.imageUrls && post.imageUrls.length > 0
+      ? post.imageUrls
+      : post.imageUrl
+      ? [post.imageUrl]
+      : [];
+
+  const visibleImages = imageUrls.slice(0, 4);
+  const extraImages = Math.max(imageUrls.length - 3, 0);
+
+  const postImageLayoutClass =
+    visibleImages.length <= 1
+      ? "post-card__media-grid--single"
+      : visibleImages.length === 2
+      ? "post-card__media-grid--two"
+      : visibleImages.length === 3
+      ? "post-card__media-grid--three"
+      : "post-card__media-grid--four";
 
   return (
     <article className="post-card">
@@ -89,9 +121,25 @@ function PostCard({
       <Link className="post-card__body-link" to={`/post/${post.rootPostId || post.id}`}>
         {post.text && <p className="post-card__text">{post.text}</p>}
 
-        {post.imageUrl && (
-          <div className="post-card__image">
-            <img src={post.imageUrl} alt="Contenido de publicacion" />
+        {imageUrls.length > 0 && (
+          <div className={`post-card__media-grid ${postImageLayoutClass}`}>
+            {visibleImages.slice(0, imageUrls.length > 4 ? 3 : 4).map((imageUrl, index) => (
+              <div key={`${imageUrl}-${index}`} className="post-card__image">
+                <img src={imageUrl} alt={`Contenido de publicacion ${index + 1}`} />
+              </div>
+            ))}
+
+            {imageUrls.length > 4 ? (
+              <div className="post-card__image post-card__image--extra">
+                <span>+{extraImages}</span>
+              </div>
+            ) : (
+              imageUrls.length === 4 && (
+                <div className="post-card__image">
+                  <img src={visibleImages[3]} alt="Contenido de publicacion 4" />
+                </div>
+              )
+            )}
           </div>
         )}
       </Link>
@@ -107,7 +155,7 @@ function PostCard({
           Me gusta {post.stats?.likeCount || 0}
         </button>
 
-        <button type="button" onClick={() => setShowCommentBox((prev) => !prev)}>
+        <button type="button" onClick={toggleCommentBox}>
           Comentar {post.stats?.commentCount || 0}
         </button>
 
@@ -132,15 +180,11 @@ function PostCard({
         </button>
       </div>
 
-      {showCommentBox && (
+      {showCommentBox && !replyTarget && (
         <div className="post-card__comment-box">
           <input
             type="text"
-            placeholder={
-              replyTarget
-                ? `Respondiendo a @${replyTarget.author?.username || replyTarget.authorUsername}`
-                : "Escribe un comentario..."
-            }
+            placeholder="Escribe un comentario..."
             value={commentText}
             onChange={(event) => setCommentText(event.target.value)}
           />
@@ -154,7 +198,7 @@ function PostCard({
         </div>
       )}
 
-      {commentImage && (
+      {showCommentBox && !replyTarget && commentImage && (
         <div className="post-card__comment-preview">
           <img src={commentImage} alt="Vista previa del comentario" />
         </div>
@@ -168,6 +212,13 @@ function PostCard({
             highlightedCommentId={highlightedCommentId}
             onReply={openReplyBox}
             onToggleLike={onToggleCommentLike}
+            activeReplyId={replyTarget?.id || ""}
+            replyText={commentText}
+            replyImage={commentImage}
+            onReplyTextChange={setCommentText}
+            onReplyImageChange={handleCommentImageChange}
+            onSubmitReply={handleComment}
+            onCancelReply={closeReplyBox}
           />
         </div>
       )}

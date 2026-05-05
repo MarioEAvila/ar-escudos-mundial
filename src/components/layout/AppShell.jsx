@@ -9,9 +9,15 @@ function AppShell({
   rightContent = null,
   children,
 }) {
+  const hasRightContent = Boolean(rightContent);
+
   return (
     <main className="app-shell">
-      <div className="app-shell__grid">
+      <div
+        className={`app-shell__grid ${
+          hasRightContent ? "app-shell__grid--with-right" : "app-shell__grid--no-right"
+        }`}
+      >
         <div className="app-shell__left">
           <HomeSidebar
             user={user}
@@ -25,7 +31,7 @@ function AppShell({
           {children}
         </section>
 
-        <aside className="app-shell__right">{rightContent}</aside>
+        {hasRightContent && <aside className="app-shell__right">{rightContent}</aside>}
       </div>
     </main>
   );

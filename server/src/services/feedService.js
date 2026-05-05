@@ -141,6 +141,12 @@ export async function normalizePost(post, viewerId, options = {}) {
     authorUsername: author?.username || "usuario",
     text: post.text,
     imageUrl: post.imageUrl,
+    imageUrls:
+      post.imageUrls && post.imageUrls.length > 0
+        ? post.imageUrls
+        : post.imageUrl
+        ? [post.imageUrl]
+        : [],
     createdAt: options.createdAt || post.createdAt,
     comments,
     stats: {

@@ -21,6 +21,8 @@ function HomePage({ currentUser, onOpenAR }) {
     toggleFavorite,
     sharePost,
     addComment,
+    replyToComment,
+    toggleCommentLike,
   } = useSocialFeed();
   const {
     teams,
@@ -135,6 +137,8 @@ function HomePage({ currentUser, onOpenAR }) {
               onToggleFavorite={toggleFavorite}
               onShare={sharePost}
               onAddComment={addComment}
+              onReplyToComment={replyToComment}
+              onToggleCommentLike={toggleCommentLike}
             />
           ))
         ) : (

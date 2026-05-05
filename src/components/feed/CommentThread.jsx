@@ -8,6 +8,13 @@ function CommentThread({
   depth = 0,
   onReply,
   onToggleLike,
+  activeReplyId = "",
+  replyText = "",
+  replyImage = "",
+  onReplyTextChange,
+  onReplyImageChange,
+  onSubmitReply,
+  onCancelReply,
 }) {
   if (!comments?.length) return null;
 
@@ -65,6 +72,37 @@ function CommentThread({
               {childCount > 0 && <span>{childCount} respuestas</span>}
             </div>
 
+            {activeReplyId === comment.id && (
+              <div className="post-card__comment-box post-card__comment-box--inline">
+                <input
+                  type="text"
+                  placeholder={`Respondiendo a @${comment.author?.username || comment.authorUsername}`}
+                  value={replyText}
+                  onChange={(event) => onReplyTextChange?.(event.target.value)}
+                />
+                <label className="post-card__comment-image-button">
+                  Imagen
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={onReplyImageChange}
+                  />
+                </label>
+                <button type="button" onClick={onSubmitReply}>
+                  Enviar
+                </button>
+                <button type="button" onClick={onCancelReply}>
+                  Cancelar
+                </button>
+              </div>
+            )}
+
+            {activeReplyId === comment.id && replyImage && (
+              <div className="post-card__comment-preview">
+                <img src={replyImage} alt="Vista previa de respuesta" />
+              </div>
+            )}
+
             {childCount > 0 && (
               <CommentThread
                 postId={postId}
@@ -73,6 +111,13 @@ function CommentThread({
                 depth={depth + 1}
                 onReply={onReply}
                 onToggleLike={onToggleLike}
+                activeReplyId={activeReplyId}
+                replyText={replyText}
+                replyImage={replyImage}
+                onReplyTextChange={onReplyTextChange}
+                onReplyImageChange={onReplyImageChange}
+                onSubmitReply={onSubmitReply}
+                onCancelReply={onCancelReply}
               />
             )}
           </article>

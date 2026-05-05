@@ -25,12 +25,20 @@ router.post(
   "/posts",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const imageUrl = await uploadImage(req.body.image, "mundial-fc/posts");
+    const imageInputs = Array.isArray(req.body.images)
+      ? req.body.images.filter(Boolean)
+      : req.body.image
+      ? [req.body.image]
+      : [];
+    const imageUrls = await Promise.all(
+      imageInputs.map((image) => uploadImage(image, "mundial-fc/posts"))
+    );
 
     await Post.create({
       authorId: req.user._id,
       text: req.body.text || "",
-      imageUrl,
+      imageUrl: imageUrls[0] || "",
+      imageUrls,
     });
 
     const items = await buildFeed(req.user._id);

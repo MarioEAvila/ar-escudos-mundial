@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema(
     },
     text: { type: String, default: "" },
     imageUrl: { type: String, default: "" },
+    imageUrls: [{ type: String }],
   },
   { timestamps: true }
 );
