@@ -114,7 +114,7 @@ h1 {
 
 .game-layout {
   display: grid;
-  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
   gap: 16px;
   align-items: stretch;
 }
@@ -187,14 +187,14 @@ h1 {
 
 .game-card__stage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 84px;
+  grid-template-columns: minmax(0, 1fr) 96px;
   gap: 14px;
   align-items: stretch;
 }
 
 canvas {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   display: block;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;

@@ -62,7 +62,7 @@
 
 .minigame-frame {
   width: 100%;
-  height: clamp(760px, 84vh, 1020px);
+  height: clamp(860px, 88vh, 1120px);
   border: none;
   border-radius: 22px;
   background: black;

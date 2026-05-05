@@ -25,8 +25,17 @@ router.post(
   "/posts",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const imageInputs = Array.isArray(req.body.images)
-      ? req.body.images.filter(Boolean)
+    const rawImages = req.body.images;
+    const normalizedImages = Array.isArray(rawImages)
+      ? rawImages
+      : rawImages && typeof rawImages === "object"
+      ? Object.values(rawImages)
+      : typeof rawImages === "string"
+      ? [rawImages]
+      : [];
+
+    const imageInputs = normalizedImages.length > 0
+      ? normalizedImages.filter(Boolean)
       : req.body.image
       ? [req.body.image]
       : [];

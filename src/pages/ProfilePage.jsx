@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AppShell from "../components/layout/AppShell";
 import EmptyPanel from "../components/common/EmptyPanel";
 import LoadingPanel from "../components/common/LoadingPanel";
@@ -29,14 +29,8 @@ function ProfilePage({ currentUser, onOpenAR }) {
     toggleCommentLike,
   } = useSocialFeed();
 
-  useEffect(() => {
-    refreshFeed();
-  }, [refreshFeed]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const loadProfile = async () => {
+  const loadProfile = useMemo(
+    () => async (mountedRef = { current: true }) => {
       setIsProfileLoading(true);
       setProfileError("");
 
@@ -44,24 +38,45 @@ function ProfilePage({ currentUser, onOpenAR }) {
         const response = await profileService.getProfile(
           username || currentUser?.username
         );
-        if (!mounted) return;
+        if (!mountedRef.current) return;
         setProfile(response.profile);
       } catch (error) {
-        if (!mounted) return;
+        if (!mountedRef.current) return;
         setProfileError(error.message);
       } finally {
-        if (mounted) {
+        if (mountedRef.current) {
           setIsProfileLoading(false);
         }
       }
-    };
+    },
+    [currentUser?.username, username]
+  );
 
-    loadProfile();
+  useEffect(() => {
+    refreshFeed();
+  }, [refreshFeed]);
+
+  useEffect(() => {
+    const mountedRef = { current: true };
+    loadProfile(mountedRef);
 
     return () => {
-      mounted = false;
+      mountedRef.current = false;
     };
-  }, [currentUser?.username, username]);
+  }, [loadProfile]);
+
+  useEffect(() => {
+    if (activeTab !== "likes" && activeTab !== "comments" && activeTab !== "favorites") {
+      return;
+    }
+
+    const mountedRef = { current: true };
+    loadProfile(mountedRef);
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [activeTab, loadProfile]);
 
   const userPosts = useMemo(
     () => posts.filter((post) => post.author?.username === profile?.username),
@@ -75,8 +90,47 @@ function ProfilePage({ currentUser, onOpenAR }) {
 
   const likedPosts = useMemo(() => posts.filter((post) => post.viewer?.liked), [posts]);
 
-  const profileComments = profile?.activity?.comments || [];
-  const profileCommentLikes = profile?.activity?.commentLikes || [];
+  const profileComments = useMemo(() => profile?.activity?.comments || [], [profile?.activity?.comments]);
+  const profileCommentLikes = useMemo(
+    () => profile?.activity?.commentLikes || [],
+    [profile?.activity?.commentLikes]
+  );
+  const profilePostLikes = useMemo(
+    () => profile?.activity?.postLikes || [],
+    [profile?.activity?.postLikes]
+  );
+  const profilePostFavorites = useMemo(
+    () => profile?.activity?.postFavorites || [],
+    [profile?.activity?.postFavorites]
+  );
+
+  const postLikeOrder = useMemo(
+    () =>
+      new Map(
+        profilePostLikes.map((like, index) => [
+          like.postId,
+          {
+            createdAt: like.createdAt,
+            order: index,
+          },
+        ])
+      ),
+    [profilePostLikes]
+  );
+
+  const favoriteOrder = useMemo(
+    () =>
+      new Map(
+        profilePostFavorites.map((favorite, index) => [
+          favorite.postId,
+          {
+            createdAt: favorite.createdAt,
+            order: index,
+          },
+        ])
+      ),
+    [profilePostFavorites]
+  );
 
   const handleProfilePhotoChange = (event) => {
     const file = event.target.files?.[0];
@@ -110,13 +164,51 @@ function ProfilePage({ currentUser, onOpenAR }) {
       <EmptyPanel text={emptyText} />
     );
 
+  const orderedFavoritePosts = useMemo(() => {
+    return [...favoritePosts].sort((a, b) => {
+      const favoriteA = favoriteOrder.get(a.actionPostId || a.rootPostId || a.id);
+      const favoriteB = favoriteOrder.get(b.actionPostId || b.rootPostId || b.id);
+      return new Date(favoriteB?.createdAt || 0) - new Date(favoriteA?.createdAt || 0);
+    });
+  }, [favoriteOrder, favoritePosts]);
+
+  const orderedLikedPosts = useMemo(() => {
+    return [...likedPosts].sort((a, b) => {
+      const likeA = postLikeOrder.get(a.actionPostId || a.rootPostId || a.id);
+      const likeB = postLikeOrder.get(b.actionPostId || b.rootPostId || b.id);
+      return new Date(likeB?.createdAt || 0) - new Date(likeA?.createdAt || 0);
+    });
+  }, [likedPosts, postLikeOrder]);
+
+  const likeActivity = useMemo(() => {
+    const postItems = orderedLikedPosts.map((post) => ({
+      id: `post-${post.id}`,
+      type: "post",
+      createdAt:
+        postLikeOrder.get(post.actionPostId || post.rootPostId || post.id)?.createdAt ||
+        post.createdAt,
+      post,
+    }));
+
+    const commentItems = profileCommentLikes.map((like) => ({
+      id: `comment-${like.id}`,
+      type: "comment",
+      createdAt: like.createdAt,
+      like,
+    }));
+
+    return [...postItems, ...commentItems].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+  }, [orderedLikedPosts, postLikeOrder, profileCommentLikes]);
+
   const renderTabContent = () => {
     if (activeTab === "posts") {
       return renderPostList(userPosts, "Todavia no hay publicaciones ni reposts.");
     }
 
     if (activeTab === "favorites") {
-      return renderPostList(favoritePosts, "Todavia no tienes favoritos.");
+      return renderPostList(orderedFavoritePosts, "Todavia no tienes favoritos.");
     }
 
     if (activeTab === "comments") {
@@ -135,17 +227,58 @@ function ProfilePage({ currentUser, onOpenAR }) {
     }
 
     if (activeTab === "likes") {
+      const hasLikeActivity = likeActivity.length > 0;
+
+      if (!hasLikeActivity) {
+        return <EmptyPanel text="Todavia no has dado me gusta a publicaciones." />;
+      }
+
       return (
         <>
-          {renderPostList(likedPosts, "Todavia no has dado me gusta a publicaciones.")}
-          {profileCommentLikes.length > 0 &&
-            profileCommentLikes.map((like) => (
-              <article key={like.id} className="profile-comment-card">
+          {likeActivity.map((activity) =>
+            activity.type === "post" ? (
+              <PostCard
+                key={activity.id}
+                post={activity.post}
+                currentUser={currentUser}
+                onToggleLike={toggleLike}
+                onToggleFavorite={toggleFavorite}
+                onShare={sharePost}
+                onAddComment={addComment}
+                onReplyToComment={replyToComment}
+                onToggleCommentLike={toggleCommentLike}
+              />
+            ) : (
+              <article key={activity.id} className="profile-comment-card">
                 <p className="profile-comment-card__label">Me gusta en comentario</p>
-                <h3>{like.commentPreview || "Comentario con me gusta"}</h3>
-                <span>{socialFeedService.formatRelativeTime(like.createdAt)}</span>
+                {activity.like.postId && activity.like.commentId ? (
+                  <Link
+                    className="profile-comment-card__link"
+                    to={`/post/${activity.like.postId}/comment/${activity.like.commentId}`}
+                  >
+                    <h3>
+                      {activity.like.commentAuthor?.displayName || "Usuario"}{" "}
+                      {activity.like.parentCommentId
+                        ? "respondio en un hilo"
+                        : "comento en una publicacion"}
+                    </h3>
+                    {activity.like.text ? (
+                      <p>{activity.like.text}</p>
+                    ) : (
+                      <p>Comentario sin texto</p>
+                    )}
+                    <span>{socialFeedService.formatRelativeTime(activity.like.createdAt)}</span>
+                  </Link>
+                ) : (
+                  <>
+                    <h3>Comentario no disponible</h3>
+                    <p>Este registro necesita refrescarse para cargar el hilo correcto.</p>
+                    <span>{socialFeedService.formatRelativeTime(activity.like.createdAt)}</span>
+                  </>
+                )}
               </article>
-            ))}
+            )
+          )}
         </>
       );
     }

@@ -1,27 +1,61 @@
 import { useState } from "react";
 import "./CreatePostBox.css";
 
+function readFileAsDataUrl(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result || "");
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = source;
+  });
+}
+
+async function compressImage(file) {
+  const source = await readFileAsDataUrl(file);
+  if (!source) return "";
+
+  const image = await loadImage(source);
+  const maxSize = 1600;
+  const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+  const width = Math.max(1, Math.round(image.width * scale));
+  const height = Math.max(1, Math.round(image.height * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d");
+  if (!context) return source;
+
+  context.drawImage(image, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg", 0.82);
+}
+
 function CreatePostBox({ currentUser, onCreatePost }) {
   const [text, setText] = useState("");
   const [images, setImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files || []).slice(0, 8);
+  const handleImageChange = async (event) => {
+    const files = Array.from(event.target.files || []);
     if (!files.length) return;
 
-    Promise.all(
-      files.map(
-        (file) =>
-          new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(file);
-          })
-      )
-    ).then((loadedImages) => {
-      setImages(loadedImages.filter(Boolean));
+    const loadedImages = await Promise.all(files.slice(0, 8).map(compressImage));
+
+    setImages((currentImages) => {
+      const mergedImages = [...currentImages, ...loadedImages.filter(Boolean)];
+      return mergedImages.slice(0, 8);
     });
+
+    event.target.value = "";
   };
 
   const handleSubmit = async () => {
@@ -34,6 +68,7 @@ function CreatePostBox({ currentUser, onCreatePost }) {
     try {
       await onCreatePost({
         text: trimmedText,
+        image: images[0] || "",
         images,
       });
       setText("");

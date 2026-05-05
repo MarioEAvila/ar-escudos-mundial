@@ -48,17 +48,19 @@
 
 .create-post-box__preview {
   margin-top: 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .create-post-box__preview img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 16px;
+  width: 82px;
+  height: 82px;
+  border-radius: 14px;
   border: 1px solid var(--line);
   object-fit: cover;
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .create-post-box__actions {
@@ -83,6 +85,10 @@
   color: white;
   position: relative;
   overflow: hidden;
+}
+
+.create-post-box__file-button:hover {
+  background: rgba(255,255,255,0.12);
 }
 
 .create-post-box__file-button input {

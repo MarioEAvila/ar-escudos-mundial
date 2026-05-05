@@ -18,6 +18,7 @@ function PostCard({
   const [commentText, setCommentText] = useState("");
   const [commentImage, setCommentImage] = useState("");
   const [replyTarget, setReplyTarget] = useState(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(-1);
 
   const liked = post.viewer?.liked || false;
   const favorited = post.viewer?.favorited || false;
@@ -77,6 +78,26 @@ function PostCard({
     setCommentImage("");
   };
 
+  const openImageViewer = (index) => {
+    setActiveImageIndex(index);
+  };
+
+  const closeImageViewer = () => {
+    setActiveImageIndex(-1);
+  };
+
+  const showPreviousImage = () => {
+    setActiveImageIndex((currentIndex) =>
+      currentIndex <= 0 ? imageUrls.length - 1 : currentIndex - 1
+    );
+  };
+
+  const showNextImage = () => {
+    setActiveImageIndex((currentIndex) =>
+      currentIndex >= imageUrls.length - 1 ? 0 : currentIndex + 1
+    );
+  };
+
   const imageUrls =
     post.imageUrls && post.imageUrls.length > 0
       ? post.imageUrls
@@ -120,29 +141,42 @@ function PostCard({
 
       <Link className="post-card__body-link" to={`/post/${post.rootPostId || post.id}`}>
         {post.text && <p className="post-card__text">{post.text}</p>}
+      </Link>
 
-        {imageUrls.length > 0 && (
-          <div className={`post-card__media-grid ${postImageLayoutClass}`}>
-            {visibleImages.slice(0, imageUrls.length > 4 ? 3 : 4).map((imageUrl, index) => (
-              <div key={`${imageUrl}-${index}`} className="post-card__image">
+      {imageUrls.length > 0 && (
+        <div className={`post-card__media-grid ${postImageLayoutClass}`}>
+            {visibleImages.slice(0, imageUrls.length >= 4 ? 3 : 4).map((imageUrl, index) => (
+              <button
+                key={`${imageUrl}-${index}`}
+                className="post-card__image"
+                type="button"
+                onClick={() => openImageViewer(index)}
+              >
                 <img src={imageUrl} alt={`Contenido de publicacion ${index + 1}`} />
-              </div>
+              </button>
             ))}
 
             {imageUrls.length > 4 ? (
-              <div className="post-card__image post-card__image--extra">
+              <button
+                className="post-card__image post-card__image--extra"
+                type="button"
+                onClick={() => openImageViewer(3)}
+              >
                 <span>+{extraImages}</span>
-              </div>
+              </button>
             ) : (
               imageUrls.length === 4 && (
-                <div className="post-card__image">
+                <button
+                  className="post-card__image"
+                  type="button"
+                  onClick={() => openImageViewer(3)}
+                >
                   <img src={visibleImages[3]} alt="Contenido de publicacion 4" />
-                </div>
+                </button>
               )
             )}
-          </div>
-        )}
-      </Link>
+        </div>
+      )}
 
       <div className="post-card__actions">
         <button
@@ -220,6 +254,64 @@ function PostCard({
             onSubmitReply={handleComment}
             onCancelReply={closeReplyBox}
           />
+        </div>
+      )}
+
+      {activeImageIndex >= 0 && imageUrls[activeImageIndex] && (
+        <div className="post-card__viewer" onClick={closeImageViewer}>
+          <div className="post-card__viewer-dialog" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="post-card__viewer-close"
+              onClick={closeImageViewer}
+            >
+              Cerrar
+            </button>
+
+            <div className="post-card__viewer-stage">
+              {imageUrls.length > 1 && (
+                <button
+                  type="button"
+                  className="post-card__viewer-nav"
+                  onClick={showPreviousImage}
+                >
+                  Anterior
+                </button>
+              )}
+
+              <img
+                src={imageUrls[activeImageIndex]}
+                alt={`Vista completa ${activeImageIndex + 1}`}
+              />
+
+              {imageUrls.length > 1 && (
+                <button
+                  type="button"
+                  className="post-card__viewer-nav"
+                  onClick={showNextImage}
+                >
+                  Siguiente
+                </button>
+              )}
+            </div>
+
+            {imageUrls.length > 1 && (
+              <div className="post-card__viewer-strip">
+                {imageUrls.map((imageUrl, index) => (
+                  <button
+                    key={`${imageUrl}-${index}-thumb`}
+                    type="button"
+                    className={`post-card__viewer-thumb ${
+                      activeImageIndex === index ? "active" : ""
+                    }`}
+                    onClick={() => openImageViewer(index)}
+                  >
+                    <img src={imageUrl} alt={`Miniatura ${index + 1}`} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </article>
