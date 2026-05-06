@@ -6,6 +6,7 @@ import "./NewsPage.css";
 
 function NewsPage({ currentUser, onOpenAR }) {
   const { articles, isLoading, error } = useNewsFeed();
+  const [featuredArticle, ...latestArticles] = articles;
 
   return (
     <AppShell user={currentUser} activeSection="news" onOpenAR={onOpenAR}>
@@ -21,28 +22,58 @@ function NewsPage({ currentUser, onOpenAR }) {
         ) : error ? (
           <EmptyPanel text={error} />
         ) : articles.length > 0 ? (
-          articles.map((article) => (
-            <article key={article.id || article.url} className="news-card">
-              {article.imageUrl && (
-                <div className="news-card__image">
-                  <img src={article.imageUrl} alt={article.title} />
+          <>
+            {featuredArticle ? (
+              <article className="news-featured">
+                <div className="news-featured__body">
+                  <p className="news-featured__eyebrow">Portada futbolera</p>
+                  <h2>{featuredArticle.title}</h2>
+                  <p className="news-featured__meta">
+                    {featuredArticle.sourceName || "Fuente"} ·{" "}
+                    {featuredArticle.publishedLabel || "Actual"}
+                  </p>
+                  <p>
+                    {featuredArticle.summary || "Sin resumen disponible para esta noticia."}
+                  </p>
+                  <a href={featuredArticle.url} target="_blank" rel="noreferrer">
+                    Abrir noticia
+                  </a>
                 </div>
-              )}
 
-              <div className="news-card__body">
-                <p className="news-card__meta">
-                  {article.sourceName || "Fuente"} · {article.publishedLabel || "Actual"}
-                </p>
-                <h2>{article.title}</h2>
-                <p>{article.summary || article.description || "Sin resumen disponible."}</p>
-                <a href={article.url} target="_blank" rel="noreferrer">
-                  Leer nota
-                </a>
-              </div>
-            </article>
-          ))
+                {featuredArticle.imageUrl ? (
+                  <div className="news-featured__image">
+                    <img src={featuredArticle.imageUrl} alt={featuredArticle.title} />
+                  </div>
+                ) : null}
+              </article>
+            ) : null}
+
+            <div className="news-page__list">
+              {latestArticles.map((article) => (
+                <article key={article.id || article.url} className="news-card">
+                  {article.imageUrl ? (
+                    <div className="news-card__image">
+                      <img src={article.imageUrl} alt={article.title} />
+                    </div>
+                  ) : null}
+
+                  <div className="news-card__body">
+                    <p className="news-card__tag">Futbol</p>
+                    <p className="news-card__meta">
+                      {article.sourceName || "Fuente"} · {article.publishedLabel || "Actual"}
+                    </p>
+                    <h2>{article.title}</h2>
+                    <p>{article.summary || "Sin resumen disponible."}</p>
+                    <a href={article.url} target="_blank" rel="noreferrer">
+                      Leer nota
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
         ) : (
-          <EmptyPanel text="No hay noticias disponibles por ahora." />
+          <EmptyPanel text="No hay noticias de futbol disponibles por ahora." />
         )}
       </div>
     </AppShell>
