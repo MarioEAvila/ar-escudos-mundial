@@ -1,4 +1,5 @@
 .post-card {
+  min-width: 0;
   padding: 1rem;
   border-radius: 22px;
   background: rgba(255,255,255,0.035);
@@ -20,6 +21,7 @@
 }
 
 .post-card__body-link {
+  min-width: 0;
   display: block;
 }
 
@@ -53,6 +55,7 @@
 }
 
 .post-card__media-grid {
+  min-width: 0;
   display: grid;
   gap: 0.7rem;
 }
@@ -90,6 +93,8 @@
 }
 
 .post-card__image {
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid var(--line);
@@ -99,6 +104,8 @@
 }
 
 .post-card__image img {
+  display: block;
+  max-width: 100%;
   width: 100%;
   aspect-ratio: 16 / 10;
   object-fit: contain;
@@ -421,6 +428,10 @@
 
   .post-card__media-grid--three .post-card__image:first-child {
     grid-column: auto;
+  }
+
+  .post-card__media-grid--single .post-card__image img {
+    max-height: 58vh;
   }
 
   .post-card__viewer-dialog {

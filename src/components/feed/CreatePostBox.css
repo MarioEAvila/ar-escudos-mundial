@@ -1,4 +1,5 @@
 .create-post-box {
+  min-width: 0;
   padding: 1rem;
   border-radius: 22px;
   background: rgba(255,255,255,0.035);
@@ -7,6 +8,7 @@
 }
 
 .create-post-box__top {
+  min-width: 0;
   display: flex;
   gap: 0.9rem;
 }
@@ -31,6 +33,7 @@
 }
 
 .create-post-box textarea {
+  min-width: 0;
   flex: 1;
   min-height: 110px;
   resize: vertical;
@@ -103,6 +106,7 @@
 
 @media (max-width: 560px) {
   .create-post-box__top {
+    flex-direction: column;
     align-items: flex-start;
   }
 
@@ -112,6 +116,7 @@
   }
 
   .create-post-box textarea {
+    width: 100%;
     min-height: 92px;
   }
 
