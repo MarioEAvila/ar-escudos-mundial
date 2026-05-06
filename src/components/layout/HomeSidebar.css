@@ -1,4 +1,6 @@
 .home-sidebar {
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 1.15rem;
@@ -31,6 +33,7 @@
 }
 
 .home-sidebar__nav-item {
+  min-width: 0;
   display: block;
   background: transparent;
   color: var(--text-main);
@@ -42,6 +45,7 @@
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
@@ -96,6 +100,7 @@
 }
 
 .home-sidebar__profile {
+  min-width: 0;
   margin-top: auto;
   display: flex;
   align-items: center;
@@ -107,6 +112,7 @@
 }
 
 .home-sidebar__avatar {
+  flex: 0 0 auto;
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -132,6 +138,7 @@
   font-size: 1rem;
   line-height: 0.95;
   letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
 }
 
 .home-sidebar__profile p {
@@ -190,5 +197,33 @@
 
   .home-sidebar__ar-card strong {
     font-size: 1.45rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-sidebar {
+    gap: 0.85rem;
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .home-sidebar__nav {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .home-sidebar__nav-item {
+    padding: 0.75rem 0.8rem;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .home-sidebar__profile {
+    padding: 10px;
+  }
+
+  .home-sidebar__avatar {
+    width: 48px;
+    height: 48px;
   }
 }

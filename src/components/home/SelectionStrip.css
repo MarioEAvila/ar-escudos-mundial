@@ -1,4 +1,6 @@
 .selection-strip {
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   gap: 0.9rem;
   overflow-x: auto;
@@ -15,7 +17,7 @@
 }
 
 .selection-strip__item {
-  min-width: 180px;
+  min-width: min(180px, 72vw);
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -46,6 +48,7 @@
 .selection-strip__item strong {
   display: block;
   color: white;
+  overflow-wrap: anywhere;
 }
 
 .selection-strip__item p {
