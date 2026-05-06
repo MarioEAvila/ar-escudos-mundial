@@ -1,6 +1,11 @@
 import AppShell from "../components/layout/AppShell";
 import EmptyPanel from "../components/common/EmptyPanel";
 import LoadingPanel from "../components/common/LoadingPanel";
+import WorldCupFixtureList from "../components/worldcup/WorldCupFixtureList";
+import WorldCupPlayerCard from "../components/worldcup/WorldCupPlayerCard";
+import WorldCupStandingsTable from "../components/worldcup/WorldCupStandingsTable";
+import WorldCupStatTile from "../components/worldcup/WorldCupStatTile";
+import WorldCupTeamCard from "../components/worldcup/WorldCupTeamCard";
 import { useAuth } from "../hooks/useAuth";
 import { useWorldCupData } from "../hooks/useWorldCupData";
 import "./WorldCupPage.css";
@@ -10,7 +15,6 @@ function SelectionsPage({ currentUser, onOpenAR }) {
   const {
     teams,
     standings,
-    fixtures,
     activeTeam,
     activePlayer,
     isLoading,
@@ -19,21 +23,33 @@ function SelectionsPage({ currentUser, onOpenAR }) {
     selectPlayer,
     toggleTeamFavorite,
     togglePlayerFavorite,
-  } = useWorldCupData();
+  } = useWorldCupData({ loadInitialTeam: true });
+
+  const activeTeamId = activeTeam?.id || activeTeam?.teamId || "";
+  const activePlayerId = activePlayer?.id || activePlayer?.playerId || "";
+  const favoriteTeams = currentUser?.favoriteTeams || [];
+  const favoritePlayers = currentUser?.favoritePlayers || [];
+  const isTeamFavorite = activeTeamId && favoriteTeams.includes(activeTeamId);
+  const isPlayerFavorite = activePlayerId && favoritePlayers.includes(activePlayerId);
 
   const rightContent = (
-    <section className="world-cup-panel">
+    <section className="world-cup-panel world-cup-panel--standings">
       <h2>Tabla de posiciones</h2>
-      <div className="world-cup-list">
-        {standings.map((item) => (
-          <div key={item.teamId || item.teamName} className="world-cup-list__item">
-            <strong>#{item.rank || "-"} {item.teamName}</strong>
-            <p>{item.pointsLabel || `${item.points || 0} pts`}</p>
-          </div>
-        ))}
-      </div>
+      <WorldCupStandingsTable standings={standings} activeTeamId={activeTeamId} />
     </section>
   );
+
+  const handleToggleTeamFavorite = async () => {
+    if (!activeTeamId) return;
+    const user = await toggleTeamFavorite(activeTeamId);
+    if (user) await updateUser(user);
+  };
+
+  const handleTogglePlayerFavorite = async () => {
+    if (!activePlayerId) return;
+    const user = await togglePlayerFavorite(activePlayerId);
+    if (user) await updateUser(user);
+  };
 
   return (
     <AppShell
@@ -43,93 +59,75 @@ function SelectionsPage({ currentUser, onOpenAR }) {
       rightContent={rightContent}
     >
       <section className="page-hero">
-        <p>Ruta mundialista</p>
+        <p>Ruta mundialista 2022</p>
         <h1>Selecciones</h1>
-        <span>Consulta equipos, plantilla actual, calendario y favoritos deportivos.</span>
+        <span>Explora equipos, plantillas, partidos y favoritos deportivos.</span>
       </section>
 
       {error && <EmptyPanel text={error} />}
 
       <div className="world-cup-page">
-        <section className="world-cup-panel">
-          <h2>Equipos clasificados</h2>
+        <section className="world-cup-panel world-cup-panel--wide">
+          <div className="world-cup-panel__title">
+            <h2>Equipos participantes</h2>
+            <span>{teams.length} selecciones</span>
+          </div>
+
           {isLoading && teams.length === 0 ? (
             <LoadingPanel text="Cargando selecciones..." />
           ) : (
-            <div className="world-cup-grid">
+            <div className="world-cup-grid world-cup-grid--teams">
               {teams.map((team) => (
-                <button
+                <WorldCupTeamCard
                   key={team.id || team.teamId}
-                  className={`world-cup-team-card ${
-                    activeTeam?.id === team.id || activeTeam?.teamId === team.teamId
-                      ? "active"
-                      : ""
-                  }`}
+                  team={team}
+                  isActive={(team.id || team.teamId) === activeTeamId}
                   onClick={() => selectTeam(team)}
-                >
-                  <span>{team.flag || "🏳️"}</span>
-                  <strong>{team.name}</strong>
-                  <p>{team.rankLabel || "Seleccion mundialista"}</p>
-                </button>
+                />
               ))}
             </div>
           )}
         </section>
 
-        <section className="world-cup-panel">
+        <section className="world-cup-panel world-cup-panel--feature">
           <div className="world-cup-panel__title">
-            <h2>{activeTeam?.name || "Equipo"}</h2>
-            {activeTeam && (
+            <h2>{activeTeam?.name || "Seleccion"}</h2>
+            {activeTeam ? (
               <button
-                onClick={async () => {
-                  const user = await toggleTeamFavorite(
-                    activeTeam.id || activeTeam.teamId
-                  );
-                  if (user) {
-                    await updateUser(user);
-                  }
-                }}
+                className={isTeamFavorite ? "world-cup-favorite active" : "world-cup-favorite"}
+                onClick={handleToggleTeamFavorite}
+                type="button"
               >
-                Favorito
+                {isTeamFavorite ? "Favorito" : "Marcar favorito"}
               </button>
-            )}
+            ) : null}
           </div>
 
           {activeTeam ? (
             <>
-              <p>{activeTeam.description || "Informacion basica del equipo no disponible."}</p>
-              <div className="world-cup-meta-grid">
+              <div className="world-cup-team-detail">
+                {activeTeam.logoUrl ? (
+                  <img src={activeTeam.logoUrl} alt={activeTeam.name} />
+                ) : null}
                 <div>
-                  <span>Entrenador</span>
-                  <strong>{activeTeam.coachName || "Por confirmar"}</strong>
+                  <p>{activeTeam.description}</p>
+                  <div className="world-cup-meta-grid">
+                    <WorldCupStatTile label="Pais" value={activeTeam.country || "N/D"} />
+                    <WorldCupStatTile label="Grupo" value={activeTeam.groupName || "N/D"} />
+                    <WorldCupStatTile
+                      label="Partidos"
+                      value={activeTeam.stats?.matches || 0}
+                      hint={`${activeTeam.stats?.wins || 0}G ${
+                        activeTeam.stats?.draws || 0
+                      }E ${activeTeam.stats?.losses || 0}P`}
+                    />
+                    <WorldCupStatTile
+                      label="Puntos"
+                      value={activeTeam.stats?.points || 0}
+                      hint={`DG ${activeTeam.stats?.goalDifference || 0}`}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <span>Grupo / zona</span>
-                  <strong>{activeTeam.groupName || "Por definir"}</strong>
-                </div>
-              </div>
-
-              <h3>Plantilla actual</h3>
-              <div className="world-cup-player-grid">
-                {(activeTeam.players || []).map((player) => (
-                  <button
-                    key={player.id || player.playerId}
-                    className={`world-cup-player-card ${
-                      activePlayer?.id === player.id || activePlayer?.playerId === player.playerId
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() => selectPlayer(player)}
-                  >
-                    {player.photoUrl ? (
-                      <img src={player.photoUrl} alt={player.name} />
-                    ) : (
-                      <div className="world-cup-player-card__placeholder">Jugador</div>
-                    )}
-                    <strong>{player.name}</strong>
-                    <p>{player.position || "Posicion por confirmar"}</p>
-                  </button>
-                ))}
               </div>
             </>
           ) : (
@@ -139,63 +137,81 @@ function SelectionsPage({ currentUser, onOpenAR }) {
 
         <section className="world-cup-panel">
           <div className="world-cup-panel__title">
+            <h2>Plantilla</h2>
+            <span>{activeTeam?.players?.length || 0} jugadores</span>
+          </div>
+
+          {isLoading && activeTeam && activeTeam.players?.length === 0 ? (
+            <LoadingPanel text="Actualizando plantilla..." />
+          ) : activeTeam?.players?.length > 0 ? (
+            <div className="world-cup-player-grid world-cup-player-grid--scroll">
+              {activeTeam.players.map((player) => (
+                <WorldCupPlayerCard
+                  key={player.id || player.playerId}
+                  player={player}
+                  isActive={(player.id || player.playerId) === activePlayerId}
+                  onClick={() => selectPlayer(player)}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyPanel text="La plantilla aparecera al seleccionar una seleccion con datos." />
+          )}
+        </section>
+
+        <section className="world-cup-panel">
+          <div className="world-cup-panel__title">
             <h2>{activePlayer?.name || "Jugador"}</h2>
-            {activePlayer && (
+            {activePlayer ? (
               <button
-                onClick={async () => {
-                  const user = await togglePlayerFavorite(
-                    activePlayer.id || activePlayer.playerId
-                  );
-                  if (user) {
-                    await updateUser(user);
-                  }
-                }}
+                className={
+                  isPlayerFavorite ? "world-cup-favorite active" : "world-cup-favorite"
+                }
+                onClick={handleTogglePlayerFavorite}
+                type="button"
               >
-                Favorito
+                {isPlayerFavorite ? "Favorito" : "Marcar favorito"}
               </button>
-            )}
+            ) : null}
           </div>
 
           {activePlayer ? (
-            <>
-              {activePlayer.photoUrl && (
+            <div className="world-cup-player-detail">
+              {activePlayer.photoUrl ? (
                 <img
                   className="world-cup-player-detail__photo"
                   src={activePlayer.photoUrl}
                   alt={activePlayer.name}
                 />
-              )}
-              <p>{activePlayer.bio || "Informacion del jugador no disponible."}</p>
-              <div className="world-cup-meta-grid">
-                <div>
-                  <span>Posicion</span>
-                  <strong>{activePlayer.position || "N/D"}</strong>
-                </div>
-                <div>
-                  <span>Club</span>
-                  <strong>{activePlayer.club || "N/D"}</strong>
+              ) : null}
+
+              <div>
+                <p>{activePlayer.bio || "Informacion del jugador no disponible."}</p>
+                <div className="world-cup-meta-grid">
+                  <WorldCupStatTile label="Posicion" value={activePlayer.position || "N/D"} />
+                  <WorldCupStatTile label="Seleccion" value={activePlayer.club || "N/D"} />
+                  <WorldCupStatTile label="Edad" value={activePlayer.age || "N/D"} />
+                  <WorldCupStatTile
+                    label="Nacionalidad"
+                    value={activePlayer.nationality || "N/D"}
+                  />
                 </div>
               </div>
-            </>
+            </div>
           ) : (
             <EmptyPanel text="Elige un jugador de la seleccion activa." />
           )}
         </section>
 
-        <section className="world-cup-panel">
-          <h2>Calendario</h2>
-          <div className="world-cup-list">
-            {fixtures.slice(0, 8).map((match) => (
-              <div key={match.id} className="world-cup-list__item">
-                <strong>
-                  {match.homeFlag || "🏳️"} {match.homeTeam} vs {match.awayFlag || "🏳️"} {match.awayTeam}
-                </strong>
-                <p>{match.dateLabel}</p>
-                <p>{match.venue || "Sede por confirmar"}</p>
-                {match.scoreLabel && <p>{match.scoreLabel}</p>}
-              </div>
-            ))}
+        <section className="world-cup-panel world-cup-panel--wide">
+          <div className="world-cup-panel__title">
+            <h2>Partidos de {activeTeam?.name || "la seleccion"}</h2>
+            <span>{activeTeam?.fixtures?.length || 0} encuentros</span>
           </div>
+          <WorldCupFixtureList
+            fixtures={activeTeam?.fixtures || []}
+            emptyText="Selecciona un equipo para ver su calendario y resultados."
+          />
         </section>
       </div>
     </AppShell>

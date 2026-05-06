@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import worldCupService from "../services/worldCupService";
 
-export function useWorldCupData() {
+export function useWorldCupData({ loadInitialTeam = false } = {}) {
   const [teams, setTeams] = useState([]);
   const [standings, setStandings] = useState([]);
   const [fixtures, setFixtures] = useState([]);
@@ -25,13 +25,20 @@ export function useWorldCupData() {
       setStandings(standingsResponse.standings || []);
       setFixtures(fixturesResponse.fixtures || []);
 
-      setActiveTeam((current) => current || teamsResponse.teams?.[0] || null);
+      const initialTeam = teamsResponse.teams?.[0] || null;
+      const hydratedTeam =
+        loadInitialTeam && initialTeam
+          ? (await worldCupService.getTeam(initialTeam.id || initialTeam.teamId)).team ||
+            initialTeam
+          : initialTeam;
+
+      setActiveTeam((current) => current || hydratedTeam);
     } catch (fetchError) {
       setError(fetchError.message);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [loadInitialTeam]);
 
   useEffect(() => {
     refresh();
