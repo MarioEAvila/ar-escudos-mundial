@@ -21,6 +21,23 @@ const COUNTRIES = [
 ];
 
 const MODEL_VISIBLE_SCALE = 1.18;
+const JERSEY_MATERIAL_NAME = "jersey_material";
+const JERSEY_NODE_NAME = "jersey";
+
+const TEAM_JERSEY_COLORS = {
+  mexico: "#00a651",
+  argentina: "#6ec6ff",
+  brazil: "#ffdf00",
+  france: "#2f55a4",
+  germany: "#f4f4f4",
+  spain: "#c8102e",
+  england: "#f7f7f7",
+  portugal: "#006a4e",
+  uruguay: "#6ec6ff",
+  netherlands: "#f36c21",
+  italy: "#1d70b8",
+  japan: "#ef5350",
+};
 
 export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const containerRef = useRef(null);
@@ -64,6 +81,31 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
     model.rotation.set(0, Math.PI, 0);
     model.visible = false;
     model.scale.set(0, 0, 0);
+  };
+
+  const applyTeamJerseyColor = (model, countryId) => {
+    const jerseyColor = TEAM_JERSEY_COLORS[countryId] || "#ffffff";
+
+    model.traverse((child) => {
+      if (!child.isMesh || !child.material) return;
+
+      const materials = Array.isArray(child.material)
+        ? child.material.map((material) => material.clone())
+        : [child.material.clone()];
+
+      materials.forEach((material) => {
+        const isJerseyMaterial = material.name === JERSEY_MATERIAL_NAME;
+        const isJerseyNode = child.name === JERSEY_NODE_NAME;
+
+        if (!isJerseyMaterial && !isJerseyNode) return;
+
+        material.color = new THREE.Color(jerseyColor);
+        material.vertexColors = false;
+        material.needsUpdate = true;
+      });
+
+      child.material = Array.isArray(child.material) ? materials : materials[0];
+    });
   };
 
   const hideAllModels = () => {
@@ -174,6 +216,7 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
 
             const model = gltf.scene.clone(true);
             prepareModel(model);
+            applyTeamJerseyColor(model, country.id);
 
             anchor.group.add(model);
             modelsRef.current[country.id] = model;
