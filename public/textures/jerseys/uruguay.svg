@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#ffffff"/>
+  <path d="M0 112h1024v92H0zM0 316h1024v92H0zM0 520h1024v92H0zM0 724h1024v92H0z" fill="#6ec6ff"/>
+  <rect width="310" height="310" fill="#ffffff"/>
+  <circle cx="155" cy="155" r="82" fill="#f6c343"/>
+  <path d="M155 36v238M36 155h238M72 72l166 166M238 72 72 238" stroke="#f6c343" stroke-width="22"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#111111">URU</text>
+</svg>

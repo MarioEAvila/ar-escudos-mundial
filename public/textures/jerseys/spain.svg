@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#c8102e"/>
+  <path d="M0 270h1024v484H0z" fill="#ffcc00"/>
+  <path d="M0 0h1024v116H0zM0 908h1024v116H0z" fill="#0039a6" opacity=".5"/>
+  <path d="M108 0h96v1024h-96zM820 0h96v1024h-96z" fill="#8a1538" opacity=".7"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#8a1538">ESP</text>
+</svg>

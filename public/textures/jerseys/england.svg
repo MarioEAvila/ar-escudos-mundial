@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#f7f7f7"/>
+  <path d="M452 0h120v1024H452zM0 452h1024v120H0z" fill="#c8102e"/>
+  <path d="M0 0h120v1024H0zM904 0h120v1024H904z" fill="#1b365d" opacity=".2"/>
+  <circle cx="512" cy="512" r="120" fill="#ffffff" opacity=".55"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#1b365d">ENG</text>
+</svg>

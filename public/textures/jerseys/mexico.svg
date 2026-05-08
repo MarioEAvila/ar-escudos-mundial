@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#00a651"/>
+  <path d="M0 0h190v1024H0zM834 0h190v1024H834z" fill="#00843d"/>
+  <path d="M462 0h100v1024H462z" fill="#ffffff" opacity=".95"/>
+  <path d="M515 0h47v1024h-47z" fill="#c8102e" opacity=".9"/>
+  <path d="M64 120h896v66H64zM64 838h896v66H64z" fill="#ffffff" opacity=".18"/>
+  <circle cx="512" cy="512" r="92" fill="#ffffff" opacity=".2"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#ffffff">MEX</text>
+</svg>

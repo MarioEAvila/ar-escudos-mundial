@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#ffdf00"/>
+  <path d="M0 0h1024v180H0zM0 844h1024v180H0z" fill="#009c3b"/>
+  <path d="M512 164 860 512 512 860 164 512z" fill="#009c3b" opacity=".8"/>
+  <circle cx="512" cy="512" r="116" fill="#002776"/>
+  <path d="M250 430c150 44 341 56 524 8" fill="none" stroke="#ffffff" stroke-width="36" opacity=".9"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="78" fill="#ffffff">BRA</text>
+</svg>

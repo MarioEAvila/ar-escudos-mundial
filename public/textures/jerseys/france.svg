@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#2f55a4"/>
+  <path d="M0 0h180v1024H0z" fill="#1b365d"/>
+  <path d="M844 0h180v1024H844z" fill="#ef3340"/>
+  <path d="M0 130h1024v58H0zM0 836h1024v58H0z" fill="#ffffff" opacity=".32"/>
+  <path d="M410 0h204v1024H410z" fill="#ffffff" opacity=".1"/>
+  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#ffffff">FRA</text>
+</svg>
