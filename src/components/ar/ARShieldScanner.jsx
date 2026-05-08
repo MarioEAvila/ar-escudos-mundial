@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { MindARThree } from "mind-ar/dist/mindar-image-three.prod.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { teamJerseyTextures } from "../../data/teamJerseyTextures";
 import ARScannerToolbar from "./ARScannerToolbar";
 import "./ARShieldScanner.css";
 
@@ -20,13 +21,21 @@ const COUNTRIES = [
   { id: "japan", name: "Japón", targetIndex: 11 },
 ];
 
-const MODEL_VISIBLE_SCALE = 1.18;
+const MODEL_VISIBLE_SCALE = 0.74;
+const MODEL_Y_OFFSET = -0.28;
+const JERSEY_MATERIAL_NAME = "jersey_material";
+const JERSEY_NODE_NAME = "jersey";
+const HIDDEN_MODEL_NODE_NAMES = new Set(["camera", "empty"]);
 
 export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const containerRef = useRef(null);
   const scanWindowRef = useRef(null);
   const mindarRef = useRef(null);
   const rendererRef = useRef(null);
+  const modelTemplateRef = useRef(null);
+  const textureLoaderRef = useRef(null);
+  const jerseyTexturesRef = useRef({});
+  const arSessionIdRef = useRef(0);
 
   const anchorsRef = useRef({});
   const modelsRef = useRef({});
@@ -60,10 +69,121 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   };
 
   const prepareModel = (model) => {
-    model.position.set(0, 0.05, 0);
+    model.position.set(0, MODEL_Y_OFFSET, 0);
     model.rotation.set(0, Math.PI, 0);
     model.visible = false;
     model.scale.set(0, 0, 0);
+
+    const nodesToRemove = [];
+
+    model.traverse((child) => {
+      const nodeName = (child.name || "").toLowerCase();
+      const meshName = (child.geometry?.name || "").toLowerCase();
+      const shouldRemoveNode =
+        HIDDEN_MODEL_NODE_NAMES.has(nodeName) ||
+        nodeName.startsWith("plane") ||
+        meshName.startsWith("plane") ||
+        child.isCamera ||
+        child.isLight;
+
+      if (shouldRemoveNode) {
+        nodesToRemove.push(child);
+      }
+    });
+
+    nodesToRemove.forEach((child) => {
+      if (child.parent) {
+        child.parent.remove(child);
+      }
+    });
+  };
+
+  const loadModelTemplate = async () => {
+    if (modelTemplateRef.current) return modelTemplateRef.current;
+
+    const loader = new GLTFLoader();
+    const gltf = await loader.loadAsync("/models/model.glb");
+    modelTemplateRef.current = gltf.scene;
+
+    return modelTemplateRef.current;
+  };
+
+  const getTextureLoader = () => {
+    if (!textureLoaderRef.current) {
+      textureLoaderRef.current = new THREE.TextureLoader();
+    }
+
+    return textureLoaderRef.current;
+  };
+
+  const loadTeamJerseyTexture = (countryId) => {
+    const jerseyConfig = teamJerseyTextures[countryId];
+
+    if (!jerseyConfig?.path) return Promise.resolve(null);
+    if (jerseyTexturesRef.current[countryId]) {
+      return Promise.resolve(jerseyTexturesRef.current[countryId]);
+    }
+
+    return new Promise((resolve) => {
+      getTextureLoader().load(
+        jerseyConfig.path,
+        (texture) => {
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.flipY = false;
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
+          texture.needsUpdate = true;
+
+          jerseyTexturesRef.current[countryId] = texture;
+          resolve(texture);
+        },
+        undefined,
+        (error) => {
+          console.error(`Error cargando textura de ${countryId}:`, error);
+          resolve(null);
+        }
+      );
+    });
+  };
+
+  const loadJerseyTextures = async () => {
+    const loadedTextureEntries = await Promise.all(
+      COUNTRIES.map(async (country) => [
+        country.id,
+        await loadTeamJerseyTexture(country.id),
+      ])
+    );
+
+    return Object.fromEntries(loadedTextureEntries);
+  };
+
+  const applyTeamJerseyMaterial = (model, countryId, jerseyTexture) => {
+    const jerseyConfig = teamJerseyTextures[countryId];
+    const fallbackColor = jerseyConfig?.primaryColor || "#ffffff";
+
+    model.traverse((child) => {
+      if (!child.isMesh || !child.material) return;
+
+      const materials = Array.isArray(child.material)
+        ? child.material.map((material) => material.clone())
+        : [child.material.clone()];
+
+      materials.forEach((material) => {
+        const isJerseyMaterial = material.name === JERSEY_MATERIAL_NAME;
+        const isJerseyNode = child.name === JERSEY_NODE_NAME;
+
+        if (!isJerseyMaterial && !isJerseyNode) return;
+
+        material.color = new THREE.Color(jerseyTexture ? "#ffffff" : fallbackColor);
+        material.map = jerseyTexture || null;
+        material.vertexColors = false;
+        material.metalness = 0;
+        material.roughness = 0.72;
+        material.needsUpdate = true;
+      });
+
+      child.material = Array.isArray(child.material) ? materials : materials[0];
+    });
   };
 
   const hideAllModels = () => {
@@ -86,6 +206,9 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const startAR = async () => {
     try {
       if (isScanning) return;
+
+      const sessionId = arSessionIdRef.current + 1;
+      arSessionIdRef.current = sessionId;
 
       setIsScanning(true);
       setStatusText("Inicializando cámara...");
@@ -163,31 +286,29 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
         };
       });
 
-      const loader = new GLTFLoader();
+      setStatusText("Cargando modelo y jerseys...");
 
-      loader.load(
-        "/models/model.glb",
-        (gltf) => {
-          COUNTRIES.forEach((country) => {
-            const anchor = anchorsRef.current[country.id];
-            if (!anchor) return;
+      const [modelTemplate, jerseyTextures] = await Promise.all([
+        loadModelTemplate(),
+        loadJerseyTextures(),
+      ]);
 
-            const model = gltf.scene.clone(true);
-            prepareModel(model);
+      if (arSessionIdRef.current !== sessionId) return;
 
-            anchor.group.add(model);
-            modelsRef.current[country.id] = model;
-            spawnProgressRef.current[country.id] = 1;
-          });
+      COUNTRIES.forEach((country) => {
+        const anchor = anchorsRef.current[country.id];
+        if (!anchor) return;
 
-          setStatusText("Modelo GLB cargado correctamente");
-        },
-        undefined,
-        (error) => {
-          console.error(error);
-          setStatusText("Error cargando model.glb");
-        }
-      );
+        const model = modelTemplate.clone(true);
+        prepareModel(model);
+        applyTeamJerseyMaterial(model, country.id, jerseyTextures[country.id]);
+
+        anchor.group.add(model);
+        modelsRef.current[country.id] = model;
+        spawnProgressRef.current[country.id] = 1;
+      });
+
+      setStatusText("Modelo GLB cargado correctamente");
 
       const worldPosition = new THREE.Vector3();
 
@@ -299,8 +420,12 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   };
 
   const stopAR = () => {
+    arSessionIdRef.current += 1;
+
     if (rendererRef.current) {
       rendererRef.current.setAnimationLoop(null);
+      rendererRef.current.dispose();
+      rendererRef.current = null;
     }
 
     if (mindarRef.current) {
