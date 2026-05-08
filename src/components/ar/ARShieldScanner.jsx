@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { MindARThree } from "mind-ar/dist/mindar-image-three.prod.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { teamJerseyTextures } from "../../data/teamJerseyTextures";
 import ARScannerToolbar from "./ARScannerToolbar";
 import "./ARShieldScanner.css";
 
@@ -26,27 +27,14 @@ const JERSEY_MATERIAL_NAME = "jersey_material";
 const JERSEY_NODE_NAME = "jersey";
 const HIDDEN_MODEL_NODE_NAMES = new Set(["camera", "empty"]);
 
-const TEAM_JERSEY_COLORS = {
-  mexico: "#00a651",
-  argentina: "#6ec6ff",
-  brazil: "#ffdf00",
-  france: "#2f55a4",
-  germany: "#f4f4f4",
-  spain: "#c8102e",
-  england: "#f7f7f7",
-  portugal: "#006a4e",
-  uruguay: "#6ec6ff",
-  netherlands: "#f36c21",
-  italy: "#1d70b8",
-  japan: "#ef5350",
-};
-
 export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const containerRef = useRef(null);
   const scanWindowRef = useRef(null);
   const mindarRef = useRef(null);
   const rendererRef = useRef(null);
   const modelTemplateRef = useRef(null);
+  const textureLoaderRef = useRef(null);
+  const jerseyTexturesRef = useRef({});
   const arSessionIdRef = useRef(0);
 
   const anchorsRef = useRef({});
@@ -120,8 +108,58 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
     return modelTemplateRef.current;
   };
 
-  const applyTeamJerseyColor = (model, countryId) => {
-    const jerseyColor = TEAM_JERSEY_COLORS[countryId] || "#ffffff";
+  const getTextureLoader = () => {
+    if (!textureLoaderRef.current) {
+      textureLoaderRef.current = new THREE.TextureLoader();
+    }
+
+    return textureLoaderRef.current;
+  };
+
+  const loadTeamJerseyTexture = (countryId) => {
+    const jerseyConfig = teamJerseyTextures[countryId];
+
+    if (!jerseyConfig?.path) return Promise.resolve(null);
+    if (jerseyTexturesRef.current[countryId]) {
+      return Promise.resolve(jerseyTexturesRef.current[countryId]);
+    }
+
+    return new Promise((resolve) => {
+      getTextureLoader().load(
+        jerseyConfig.path,
+        (texture) => {
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.flipY = false;
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
+          texture.needsUpdate = true;
+
+          jerseyTexturesRef.current[countryId] = texture;
+          resolve(texture);
+        },
+        undefined,
+        (error) => {
+          console.error(`Error cargando textura de ${countryId}:`, error);
+          resolve(null);
+        }
+      );
+    });
+  };
+
+  const loadJerseyTextures = async () => {
+    const loadedTextureEntries = await Promise.all(
+      COUNTRIES.map(async (country) => [
+        country.id,
+        await loadTeamJerseyTexture(country.id),
+      ])
+    );
+
+    return Object.fromEntries(loadedTextureEntries);
+  };
+
+  const applyTeamJerseyMaterial = (model, countryId, jerseyTexture) => {
+    const jerseyConfig = teamJerseyTextures[countryId];
+    const fallbackColor = jerseyConfig?.primaryColor || "#ffffff";
 
     model.traverse((child) => {
       if (!child.isMesh || !child.material) return;
@@ -136,8 +174,11 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
 
         if (!isJerseyMaterial && !isJerseyNode) return;
 
-        material.color = new THREE.Color(jerseyColor);
+        material.color = new THREE.Color(jerseyTexture ? "#ffffff" : fallbackColor);
+        material.map = jerseyTexture || null;
         material.vertexColors = false;
+        material.metalness = 0;
+        material.roughness = 0.72;
         material.needsUpdate = true;
       });
 
@@ -245,7 +286,12 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
         };
       });
 
-      const modelTemplate = await loadModelTemplate();
+      setStatusText("Cargando modelo y jerseys...");
+
+      const [modelTemplate, jerseyTextures] = await Promise.all([
+        loadModelTemplate(),
+        loadJerseyTextures(),
+      ]);
 
       if (arSessionIdRef.current !== sessionId) return;
 
@@ -255,7 +301,7 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
 
         const model = modelTemplate.clone(true);
         prepareModel(model);
-        applyTeamJerseyColor(model, country.id);
+        applyTeamJerseyMaterial(model, country.id, jerseyTextures[country.id]);
 
         anchor.group.add(model);
         modelsRef.current[country.id] = model;
