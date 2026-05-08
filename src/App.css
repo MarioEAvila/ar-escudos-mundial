@@ -223,6 +223,10 @@
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.3);
 }
 
+.ar-screen ~ .floating-logout {
+  display: none;
+}
+
 
 /* ==============================
    RESPONSIVE
@@ -246,7 +250,10 @@
 
   .floating-logout {
     left: 20px;
-    right: 20px;
+    right: auto;
     bottom: 16px;
+    border-radius: 999px;
+    padding: 0.72rem 0.9rem;
+    font-size: 0.78rem;
   }
 }

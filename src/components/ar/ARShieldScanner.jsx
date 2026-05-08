@@ -20,9 +20,11 @@ const COUNTRIES = [
   { id: "japan", name: "Japón", targetIndex: 11 },
 ];
 
-const MODEL_VISIBLE_SCALE = 1.18;
+const MODEL_VISIBLE_SCALE = 0.74;
+const MODEL_Y_OFFSET = -0.28;
 const JERSEY_MATERIAL_NAME = "jersey_material";
 const JERSEY_NODE_NAME = "jersey";
+const HIDDEN_MODEL_NODE_NAMES = new Set(["camera", "empty"]);
 
 const TEAM_JERSEY_COLORS = {
   mexico: "#00a651",
@@ -44,6 +46,8 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const scanWindowRef = useRef(null);
   const mindarRef = useRef(null);
   const rendererRef = useRef(null);
+  const modelTemplateRef = useRef(null);
+  const arSessionIdRef = useRef(0);
 
   const anchorsRef = useRef({});
   const modelsRef = useRef({});
@@ -77,10 +81,43 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   };
 
   const prepareModel = (model) => {
-    model.position.set(0, 0.05, 0);
+    model.position.set(0, MODEL_Y_OFFSET, 0);
     model.rotation.set(0, Math.PI, 0);
     model.visible = false;
     model.scale.set(0, 0, 0);
+
+    const nodesToRemove = [];
+
+    model.traverse((child) => {
+      const nodeName = (child.name || "").toLowerCase();
+      const meshName = (child.geometry?.name || "").toLowerCase();
+      const shouldRemoveNode =
+        HIDDEN_MODEL_NODE_NAMES.has(nodeName) ||
+        nodeName.startsWith("plane") ||
+        meshName.startsWith("plane") ||
+        child.isCamera ||
+        child.isLight;
+
+      if (shouldRemoveNode) {
+        nodesToRemove.push(child);
+      }
+    });
+
+    nodesToRemove.forEach((child) => {
+      if (child.parent) {
+        child.parent.remove(child);
+      }
+    });
+  };
+
+  const loadModelTemplate = async () => {
+    if (modelTemplateRef.current) return modelTemplateRef.current;
+
+    const loader = new GLTFLoader();
+    const gltf = await loader.loadAsync("/models/model.glb");
+    modelTemplateRef.current = gltf.scene;
+
+    return modelTemplateRef.current;
   };
 
   const applyTeamJerseyColor = (model, countryId) => {
@@ -128,6 +165,9 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   const startAR = async () => {
     try {
       if (isScanning) return;
+
+      const sessionId = arSessionIdRef.current + 1;
+      arSessionIdRef.current = sessionId;
 
       setIsScanning(true);
       setStatusText("Inicializando cámara...");
@@ -205,32 +245,24 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
         };
       });
 
-      const loader = new GLTFLoader();
+      const modelTemplate = await loadModelTemplate();
 
-      loader.load(
-        "/models/model.glb",
-        (gltf) => {
-          COUNTRIES.forEach((country) => {
-            const anchor = anchorsRef.current[country.id];
-            if (!anchor) return;
+      if (arSessionIdRef.current !== sessionId) return;
 
-            const model = gltf.scene.clone(true);
-            prepareModel(model);
-            applyTeamJerseyColor(model, country.id);
+      COUNTRIES.forEach((country) => {
+        const anchor = anchorsRef.current[country.id];
+        if (!anchor) return;
 
-            anchor.group.add(model);
-            modelsRef.current[country.id] = model;
-            spawnProgressRef.current[country.id] = 1;
-          });
+        const model = modelTemplate.clone(true);
+        prepareModel(model);
+        applyTeamJerseyColor(model, country.id);
 
-          setStatusText("Modelo GLB cargado correctamente");
-        },
-        undefined,
-        (error) => {
-          console.error(error);
-          setStatusText("Error cargando model.glb");
-        }
-      );
+        anchor.group.add(model);
+        modelsRef.current[country.id] = model;
+        spawnProgressRef.current[country.id] = 1;
+      });
+
+      setStatusText("Modelo GLB cargado correctamente");
 
       const worldPosition = new THREE.Vector3();
 
@@ -342,8 +374,12 @@ export default function ARShieldScanner({ onOpenManual, onOpenTrivia }) {
   };
 
   const stopAR = () => {
+    arSessionIdRef.current += 1;
+
     if (rendererRef.current) {
       rendererRef.current.setAnimationLoop(null);
+      rendererRef.current.dispose();
+      rendererRef.current = null;
     }
 
     if (mindarRef.current) {
