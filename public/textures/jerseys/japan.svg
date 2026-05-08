@@ -1,7 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <rect width="1024" height="1024" fill="#ffffff"/>
-  <path d="M0 0h1024v140H0zM0 884h1024v140H0z" fill="#1b365d"/>
-  <circle cx="512" cy="512" r="180" fill="#ef5350"/>
-  <path d="M180 0h74v1024h-74zM770 0h74v1024h-74z" fill="#ef5350" opacity=".2"/>
-  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#ffffff">JPN</text>
+  <rect width="1024" height="1024" fill="#ef5350"/>
 </svg>

@@ -1,7 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <rect width="1024" height="1024" fill="#f36c21"/>
-  <path d="M0 0h1024v134H0zM0 890h1024v134H0z" fill="#1b365d"/>
-  <path d="M0 134h1024v58H0zM0 832h1024v58H0z" fill="#ffffff" opacity=".9"/>
-  <path d="M220 0h88v1024h-88zM716 0h88v1024h-88z" fill="#ffffff" opacity=".22"/>
-  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" fill="#ffffff">NED</text>
 </svg>

@@ -1,7 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <rect width="1024" height="1024" fill="#ffffff"/>
-  <path d="M0 0h150v1024H0zM290 0h150v1024H290zM584 0h150v1024H584zM874 0h150v1024H874z" fill="#6ec6ff"/>
-  <path d="M0 128h1024v48H0zM0 848h1024v48H0z" fill="#f6c343" opacity=".55"/>
-  <circle cx="512" cy="512" r="88" fill="#f6c343" opacity=".8"/>
-  <text x="512" y="548" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="84" fill="#1b365d">ARG</text>
+  <rect width="1024" height="1024" fill="#75aadb"/>
 </svg>
